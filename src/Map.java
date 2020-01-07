@@ -12,6 +12,10 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.RenderingHints.Key;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -22,17 +26,57 @@ import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
+import java.util.Random;
+import java.util.Vector;
+
 import javax.swing.JPanel;
 
-public class Map extends JPanel{
+public class Map extends JPanel implements MouseListener, KeyListener{
 	char map[][] = new char[50][50];
 	int w, h, unit; 
 	Tile tile = new Tile();
 	
+	Vector<Enemy> enemies = new Vector<>();
+	
+	
+	
+	private Thread gameThread;
+	private boolean running = true;
+	private double FPS = 60;
+	private double NANOSECOND_PER_FRAME = 1e9/FPS;
+	private double SECOND_PER_FRAME = 1/FPS;
+	private int x1 = 3, y1 = 3;
+	private int velx = 1, vely = 1;
 	public Map(int w, int h ) {
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
+		enemies.add(new Enemy(7, 6, "kelvin"));
+		enemies.add(new Enemy(10, 18, "vincent"));
+		enemies.add(new Enemy(25, 7, "kevin"));
+		gameThread = new Thread(this::run);
+		gameThread.start();
+	}
+	
+	public void run(){
+		int max = 25; 
+		int min = 1;
+		
+		x1 = (int) ((Math.random() * ((max - min) + 1)) + min);
+		y1 = (int) ((Math.random() * ((max - min) + 1)) + min);
+		
+		while(running){
+			System.out.println("running");
+			// jalan miring , test
+			repaint();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(x1 > 40 || y1 > 40) break;
+		}
 	}
 	
 	@Override
@@ -57,8 +101,17 @@ public class Map extends JPanel{
 				if(i == 20 && j == 25){
 					tile.drawHome(i, j, g, unit);
 				}
-				if(i == 5 && j == 5) tile.drawTower(i, j, g, unit); // example enemy
+				
 			}
+		}
+		
+		for (Enemy enemy : enemies) {
+			System.out.println(enemy.getName());
+			velx = enemy.getVelx();
+			vely = enemy.getVely();
+			enemy.setX(enemy.getX()+velx);
+			enemy.setY(enemy.getY()+vely);
+			enemy.update(g);
 		}
 		
 		for(int i=0; i<40; i++){
@@ -67,5 +120,53 @@ public class Map extends JPanel{
 			}
 			System.out.println();
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
