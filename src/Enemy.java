@@ -1,8 +1,8 @@
 import java.awt.Graphics2D;
 
 public class Enemy {
-	private int x;
-	private int y;
+	private int x = 3;
+	private int y = 3;
 	private int velx = 1;
 	private int vely = 1;
 	
@@ -15,31 +15,23 @@ public class Enemy {
 	}
 
 	public void update(Graphics2D g, Tile tile){
-		
-		if(x >= 37){
-			velx = -1;
+		Dijkstra d = new Dijkstra(x, y, weight);
+//		d.showPath(20, 25);
+		int dir = 1;
+		if(dir == 1){
+			x++;
 		}
-		if(x <= 2){
-			velx = +1;
+		if(dir == 2){
+			x--;
 		}
-		if(y >= 28){
-			vely = -1;
+		if(dir == 3){
+			y++;
 		}
-		if(y <= 2){
-			vely = +1;
+		if(dir == 4){
+			y--;
 		}
 		tile.drawTower(x, y, g, unit);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public int getX() {
 		return x;
