@@ -101,5 +101,8 @@ public class Tile {
 	public void setWeight(int i, int j, int val){
 		weight[i][j] = val;
 	}
-
+	public int[][] getWeightAll(){
+		return weight;
+	}
+	
 }

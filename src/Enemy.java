@@ -1,43 +1,35 @@
 import java.awt.Graphics2D;
 
 public class Enemy {
-	private String name;
 	private int x;
 	private int y;
 	private int velx = 1;
 	private int vely = 1;
 	
+	private int[][] weight = new int[200][200];
+	
 	private int unit = 20;
-	private Tile tile = new Tile();
-	public Enemy(int x, int y, String name) {
+
+	public Enemy(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.name = name;
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void update(Graphics2D g){
 		
-		if(x >= 25){
+		if(x >= 37){
 			velx = -1;
 		}
-		if(x <= 3){
+		if(x <= 2){
 			velx = +1;
 		}
-		if(y >= 25){
+		if(y >= 28){
 			vely = -1;
 		}
-		if(y <= 3){
+		if(y <= 2){
 			vely = +1;
 		}
-		tile.drawEnemy(x, y, g, unit);
+		tile.drawTower(x, y, g, unit);
 	}
 	
 	
@@ -91,6 +83,8 @@ public class Enemy {
 		this.tile = tile;
 	}
 
-	
+	public void setWeight(int[][] weight){
+		this.weight = weight;
+	}
 	
 }
