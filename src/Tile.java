@@ -52,6 +52,13 @@ public class Tile {
 		  weight[i][j] += 500-initial_weight;
 	}
 	
+	public void drawTowerInfo(int i, int j, Graphics2D g){
+		int xPoints[] = {i+0, i+9, i+20};
+		int yPoints[] = {j+18, j-2, j+18};
+		g.setColor(Color.GREEN);
+		g.fillPolygon(xPoints, yPoints, 3);
+	}
+
 	public void drawNormalTile(int i, int j, Graphics2D g, int unit){
 		g.setStroke(new BasicStroke(2));
 		g.setColor(Color.BLACK);
@@ -74,12 +81,43 @@ public class Tile {
 			drawNormalTile(i, j, g, unit);
 		}
 	}
+	
+	public void drawSpawnerInfo(int i, int j, Graphics2D g){
+		g.setStroke(new BasicStroke(3));
+		g.setColor(Color.RED);
+		g.drawLine(i, j, i+15, j+15);
+		g.setStroke(new BasicStroke(3));
+		g.setColor(Color.RED);
+		g.drawLine(i, j+15, i+15, j);
+	}
+	
+	public void drawHeart(int x, int y, Graphics2D g2) {
+        g2.setColor(Color.RED);
+		g2.fillArc(x, y, 15, 15, 180, -180);
+
+        g2.setColor(Color.RED);
+		g2.fillArc(x+12, y, 15, 15, 180, -180);
+        
+        g2.setColor(Color.RED);
+        g2.fillPolygon(new int[]{x,x+14,x+26}, new int[]{y+7,y+20,y+7}, 3);
+	}
+	
+	public void drawCoin(int x, int y, Graphics2D g){
+        g.setColor(Color.YELLOW);
+		g.fillOval(x, y, 23, 23);
+	}
+	
 	public void drawWall(int i, int j, Graphics2D g, int unit){
 		g.setColor(Color.BLACK);
 		g.fillRect(unit * i, unit * j, unit, unit);
 		weight[i][j] = 99999;
 	}
 
+	public void drawWallInfo(int i, int j, Graphics2D g){
+		g.setColor(Color.BLACK);
+		g.fillRect(i, j, 20, 20);
+	}
+	
 	public void drawHome(int i, int j, Graphics2D g, int unit){
 		int xPoints[] = {i*unit, i*unit, i*unit+10, i*unit+20, i*unit+20};
 		int yPoints[] = {j*unit+20, j*unit+10, j*unit, j*unit+10, j*unit+20};
@@ -96,6 +134,17 @@ public class Tile {
 		g.setColor(Color.RED);
 		g.fillOval(i*unit+2, j*unit+2, 16, 16);
 		weight[i][j] = 600;
+	}
+	
+	public void drawEnemyInfo(int x, int y, Graphics2D g){
+        g.setColor(Color.RED);
+		g.fillOval(x, y, 23, 23);
+	}
+	
+	public void drawEnemyBase(int i, int j, Graphics2D g){
+		Color customColor = new Color(165, 42, 42);
+		g.setColor(customColor);
+		g.fillOval(i, j, 23, 23);
 	}
 	
 	public int getWeight(int i, int j){
