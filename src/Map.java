@@ -29,6 +29,8 @@ import java.text.AttributedCharacterIterator;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Map extends JPanel implements MouseListener, KeyListener{
@@ -37,8 +39,6 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	Tile tile = new Tile();
 	
 	Vector<Enemy> enemies = new Vector<>();
-	
-	
 	
 	private Thread gameThread;
 	private boolean running = true;
@@ -119,6 +119,101 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 			}
 			System.out.println();
 		}
+
+		tile.drawHome(41, 2, g, unit);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Home", 865, 55);
+		
+		tile.drawEnemyBase(818, 65, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy Base Color", 865, 82);
+
+		tile.drawEnemyInfo(818, 93, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy in Full Health", 865, 110);
+		
+		tile.drawTowerInfo(821, 121, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Tower", 865, 135);
+		
+		tile.drawSpawnerInfo(823, 147, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy Spawner", 865, 160);
+		
+		tile.drawWallInfo(821, 167, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Wall", 865, 183);
+
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("HP:", 820, 225);
+		//ATUR JUMLAH HATI ===============
+		for (int i = 0; i < 3; i++) {
+			tile.drawHeart(860+i*35,208,g);
+		}
+		//==================================
+
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Coin:", 820, 260);
+		tile.drawCoin(870,243,g);
+		g.setColor(Color.BLACK);
+		g.drawString("  X", 900, 260);
+		
+		//i ini contoh angka, ubah di sini sesuai jumlah coin nnt==============
+		int i = 1;
+		String coin = Integer.toString(i);
+		g.drawString(coin, 921, 260);
+		//=============================================
+		
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy:", 820, 295);
+		tile.drawEnemyInfo(890, 278, g);
+		g.setColor(Color.BLACK);
+		g.drawString("  X", 917, 295);
+		
+		//i ini contoh angka, ubah di sini sesuai jumlah enemy nnt==============
+		int enem = 5;
+		String enemies = Integer.toString(enem);
+		g.drawString(enemies, 937, 295);
+		//=============================================	
+		
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Spawner:", 820, 333);
+		tile.drawSpawnerInfo(900, 320, g);
+		g.setColor(Color.BLACK);
+		g.drawString("  X", 923, 333);
+		
+		//i ini contoh angka, ubah di sini sesuai jumlah spawners nnt==============
+		int spaw = 87;
+		String spawners = Integer.toString(spaw);
+		g.drawString(spawners, 944, 333);
+		//=============================================
+		
+		g.setColor(Color.BLACK);
+		if(true){ //atur nnti pas P di tekan atau ngaknya disini==================
+			g.setFont(new Font("Calibri", Font.BOLD, 27));
+			g.drawString("Press P to Pause", 820, 405);
+		}
+		else{
+			g.setFont(new Font("Calibri", Font.BOLD, 27));
+			g.drawString("Press P to Play", 820, 405);
+		}//================================================================
+
+		g.setFont(new Font("Calibri", Font.BOLD, 27));
+		g.drawString("Press Esc to Exit", 820, 460);
+		
+		g.setFont(new Font("Calibri", Font.BOLD, 37));
+		g.drawString("Tower", 858, 537);
+		g.setFont(new Font("Calibri", Font.BOLD, 37));
+		g.drawString("Defense", 846, 587);
 	}
 
 	@Override
