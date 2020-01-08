@@ -34,11 +34,12 @@ import javax.swing.JPanel;
 public class Map extends JPanel implements MouseListener, KeyListener{
 	char map[][] = new char[50][50];
 	int w, h, unit; 
+	int x=-1, y=-1;
 	Tile tile = new Tile();
 	
 	Vector<Enemy> enemies = new Vector<>();
 	
-	
+	Vector<Pair> towers = new Vector<>();
 	
 	private Thread gameThread;
 	private boolean running = true;
@@ -51,9 +52,26 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-		enemies.add(new Enemy(6, 7));
-		enemies.add(new Enemy(7, 6));
-		enemies.add(new Enemy(8, 7));
+		enemies.add(new Enemy(20, 7));
+		enemies.add(new Enemy(18, 6));
+		enemies.add(new Enemy(28, 2));
+		enemies.add(new Enemy(28, 20));
+		enemies.add(new Enemy(27, 2));
+		enemies.add(new Enemy(26, 2));
+		enemies.add(new Enemy(25, 2));
+		enemies.add(new Enemy(24, 2));
+		enemies.add(new Enemy(23, 2));
+		enemies.add(new Enemy(26, 3));
+		enemies.add(new Enemy(25, 3));
+		enemies.add(new Enemy(24, 3));
+		enemies.add(new Enemy(23, 3));
+		
+		towers.add(new Pair(19,20));
+		towers.add(new Pair(25,20));
+		towers.add(new Pair(16,24));
+		towers.add(new Pair(26,24));
+		addMouseListener(this);
+		
 		gameThread = new Thread(this::run);
 		gameThread.start();
 	}
@@ -70,7 +88,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 			// jalan miring , test
 			repaint();
 			try {
-				Thread.sleep(100);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -101,17 +119,25 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				if(i == 20 && j == 25){
 					tile.drawHome(i, j, g, unit);
 				}
-				if(i == 3 && j == 3){
-					tile.drawTower(i, j, g, unit);
-				}
 			}
 		}
+		if(this.x != -1 && this.y != -1){
+			tile.drawTower(x/unit, y/unit, g, unit);
+			this.x = -1;
+			this.y = -1;
+			System.out.println("running draw tower");
+		}
 		
-//		for (Enemy enemy : enemies) {
-//			enemy.setWeight(tile.getWeightAll());
-//			enemy.update(g, tile);
-//			System.out.println(enemy.getX() + " " + enemy.getX());
-//		}
+		for (Pair tower : towers) {
+			tile.drawTower(tower.getFirst(), tower.getSecond(), g, unit);
+		}
+		
+		
+		for (Enemy enemy : enemies) {
+			enemy.setWeight(tile.getWeightAll());
+			enemy.update(g, tile);
+			System.out.println(enemy.getX() + " " + enemy.getX());
+		}
 
 		
 		for(int i=0; i<40; i++){
@@ -143,7 +169,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		towers.add(new Pair(e.getX()/unit, e.getY()/unit));
 	}
 
 	@Override
