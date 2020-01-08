@@ -16,8 +16,8 @@ public class Enemy {
 
 	public void update(Graphics2D g, Tile tile){
 		Dijkstra d = new Dijkstra(x, y, weight);
-//		d.showPath(20, 25);
-		int dir = 1;
+		int dir = d.showPath(20, 25, x, y);
+		System.out.println(dir);
 		if(dir == 1){
 			x++;
 		}
@@ -30,6 +30,7 @@ public class Enemy {
 		if(dir == 4){
 			y--;
 		}
+		
 		tile.drawTower(x, y, g, unit);
 	}
 	

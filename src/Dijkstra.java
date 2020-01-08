@@ -70,16 +70,33 @@ public class Dijkstra {
 			}
 //			System.out.println("process : " + indexI + " " + indexJ + " = " + parent[indexI][indexJ].getFirst() + " " + parent[indexI][indexJ].getSecond() + " " + cost);
 		}
-		showPath(20, 25);
 		
 	}
-	public void showPath(int i, int j){
-		if(i == -1 || j == -1){
-			return;
+	public int showPath(int i, int j, int newX, int newY){
+		int ret = 0;
+		if(parent[i][j].getFirst() == newX && parent[i][j].getSecond() == newY){
+			System.out.println(i + " " + j + " " + newX + " " + newY );
+			if(i < newX){
+				ret = 1;
+				return ret;
+			}
+			if(i > newX){
+				ret = 2;
+				return ret;
+			}
+			if(j < newY){
+				ret = 3;
+				return ret;
+			}
+			if(j > newY){
+				ret = 4;
+				return ret;
+			}
 		}
-		showPath(parent[i][j].getFirst(), parent[i][j].getSecond());
-		System.out.println(i + " " + j);
 		
+		ret = showPath(parent[i][j].getFirst(), parent[i][j].getSecond(), newX, newY);
+		
+		return ret;
 	}
 	
 	
