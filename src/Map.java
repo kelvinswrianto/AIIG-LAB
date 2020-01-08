@@ -107,10 +107,6 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		
 		for (Enemy enemy : enemies) {
 			System.out.println(enemy.getName());
-			velx = enemy.getVelx();
-			vely = enemy.getVely();
-			enemy.setX(enemy.getX()+velx);
-			enemy.setY(enemy.getY()+vely);
 			enemy.update(g);
 		}
 		
