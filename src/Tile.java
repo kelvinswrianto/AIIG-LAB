@@ -16,39 +16,40 @@ public class Tile {
 	}
 	
 	public void drawTower(int i, int j, Graphics2D g, int unit){
-		
-		// draw range tower
-		int dirx[] = {+1,+1,+0,+0,-1,-1,+1,-1};
-		int diry[] = {+1,-1,+1,-1,+1,-1,+0,+0};
-		for(int x=0; x<8; x++){
-			g.setColor(new Color(255, 0, 255, 60));
-			g.fillRect(unit * (i+dirx[x]), unit * (j+diry[x]), unit, unit);
-			weight[i+dirx[x]][j+diry[x]] += 27-initial_weight;
-		}
-		int dirx2[] = {+2,+2,-2,-2,+0,+0,+2,-2,-1,-1,+1,+1};
-		int diry2[] = {+1,-1,+1,-1,+2,-2,+0,+0,+2,-2,+2,-2};
-		for(int x=0; x<12; x++){
-			g.setColor(new Color(255, 0, 255, 60));
-			g.fillRect(unit * (i+dirx2[x]), unit * (j+diry2[x]), unit, unit);
-			weight[i+dirx2[x]][j+diry2[x]] += 27-initial_weight;
-		}
-		int dirx3[] = {+3,-3,+0,+0};
-		int diry3[] = {+0,+0,+3,-3};
-		for(int x=0; x<4; x++){
-			g.setColor(new Color(255, 0, 255, 60));
-			g.fillRect(unit * (i+dirx3[x]), unit * (j+diry3[x]), unit, unit);
-			weight[i+dirx3[x]][j+diry3[x]] += 27-initial_weight;
-		}
-		
-		g.setColor(new Color(255, 0, 255, 60));
-		g.fillRect(unit * i, unit * j, unit, unit);
-		int xPoints[] = {i*unit+0, i*unit+10, i*unit+20};
-		int yPoints[] = {j*unit+20, j*unit, j*unit+20};
-		g.setColor(Color.GREEN);
-		g.fillPolygon(xPoints, yPoints, 3);
+		 // draw range tower
+		  int dirx[] = {+1,+1,+0,+0,-1,-1,+1,-1};
+		  int diry[] = {+1,-1,+1,-1,+1,-1,+0,+0};
+		  for(int x=0; x<8; x++){
+			  g.setColor(new Color(255, 0, 255, 60));
+			  g.fillRect(unit * (i+dirx[x]), unit * (j+diry[x]), unit, unit);
+			  weight[i+dirx[x]][j+diry[x]] += 27-initial_weight;
+		  }
+		  
+		  int dirx2[] = {+2,+2,-2,-2,+0,+0,+2,-2,-1,-1,+1,+1};
+		  int diry2[] = {+1,-1,+1,-1,+2,-2,+0,+0,+2,-2,+2,-2};
+		  for(int x=0; x<12; x++){
+			  g.setColor(new Color(255, 0, 255, 60));
+			  g.fillRect(unit * (i+dirx2[x]), unit * (j+diry2[x]), unit, unit);
+			  weight[i+dirx2[x]][j+diry2[x]] += 27-initial_weight;
+		  }
+		  
+		  int dirx3[] = {+3,-3,+0,+0};
+		  int diry3[] = {+0,+0,+3,-3};
+		  for(int x=0; x<4; x++){
+			  g.setColor(new Color(255, 0, 255, 60));
+			  g.fillRect(unit * (i+dirx3[x]), unit * (j+diry3[x]), unit, unit);
+			  weight[i+dirx3[x]][j+diry3[x]] += 27-initial_weight;
+		  }
+		  
+		  g.setColor(new Color(255, 0, 255, 60));
+		  g.fillRect(unit * i, unit * j, unit, unit);
+		  int xPoints[] = {i*unit+0, i*unit+10, i*unit+20};
+		  int yPoints[] = {j*unit+20, j*unit, j*unit+20};
+		  g.setColor(Color.GREEN);
+		  g.fillPolygon(xPoints, yPoints, 3);
 
-		// add weight tower
-		weight[i][j] += 500-initial_weight;
+		  // add weight tower
+		  weight[i][j] += 500-initial_weight;
 	}
 	
 	public void drawNormalTile(int i, int j, Graphics2D g, int unit){

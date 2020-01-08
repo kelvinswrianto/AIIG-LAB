@@ -99,11 +99,11 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 				// draw home
 				if(i == 20 && j == 25){
+					tile.drawHome(i, j, g, unit);
+				}
+				if(i == 3 && j == 3){
 					tile.drawTower(i, j, g, unit);
 				}
-//				if(i == 17 && j == 17){
-//					tile.drawTower(i, j, g, unit);
-//				}
 			}
 		}
 		
