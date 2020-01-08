@@ -1,5 +1,4 @@
 
-
 public class Node {
 	int  cost;
 	int i, j;
@@ -29,5 +28,4 @@ public class Node {
 		this.cost = cost;
 	}
 
-	
 }

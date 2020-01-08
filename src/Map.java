@@ -26,6 +26,7 @@ import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
@@ -38,9 +39,11 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	int w, h, unit; 
 	Tile tile = new Tile();
 	
-	Vector<Enemy> enemies = new Vector<>();
+	Vector<Pair> spawners = new Vector<>();
+	java.util.Map<Pair,Boolean> maps = new HashMap<Pair,Boolean>();
 	
 	private Thread gameThread;
+	private boolean boot = true;
 	private boolean running = true;
 	private double FPS = 60;
 	private double NANOSECOND_PER_FRAME = 1e9/FPS;
@@ -51,9 +54,9 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-		enemies.add(new Enemy(7, 6));
-		enemies.add(new Enemy(10, 18));
-		enemies.add(new Enemy(25, 7));
+		//enemies.add(new Enemy(2, 2));
+//		enemies.add(new Enemy(10, 18));
+//		enemies.add(new Enemy(25, 7));
 		gameThread = new Thread(this::run);
 		gameThread.start();
 	}
@@ -69,13 +72,22 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 			System.out.println("running");
 			// jalan miring , test
 			repaint();
+			if(!boot){
+				Random rand = new Random();
+				int spawns = rand.nextInt(spawners.size());
+				Pair elementAt = spawners.remove(spawns);
+				System.out.println("SPAWN! " + elementAt.getFirst() +" " + elementAt.getSecond());
+//				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
+			}
+			
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if(x1 > 40 || y1 > 40) break;
+			break;
 		}
 	}
 	
@@ -95,7 +107,14 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 				// draw spawner
 				if(i == 1 && j >= 1 && j <= 28 || i == 38 && j >= 1 && j <= 28 || j == 1 && i >= 1 && i <= 38){
+					Pair pairs = new Pair(i, j);
+					if(boot){
+						spawners.add(pairs);
+//						maps.put(pairs, true);
+					}
+//					if(maps.get(pairs) == true) 
 					tile.drawSpawner(i, j, g, unit, true);
+//					else tile.drawSpawner(i, j, g, unit, false);
 				}
 				// draw home
 				if(i == 20 && j == 25){
@@ -103,15 +122,14 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 			}
 		}
+		this.boot = false;
 		
-		for (Enemy enemy : enemies) {
-			enemy.setWeight(tile.getWeightAll());
-			velx = enemy.getVelx();
-			vely = enemy.getVely();
-			enemy.setX(enemy.getX()+velx);
-			enemy.setY(enemy.getY()+vely);
-			enemy.update(g, tile);
-		}
+//		for (Enemy enemy : enemies) {
+////			System.out.println(enemy.getName());
+//			enemy.setWeight(tile.getWeightAll());
+//			enemy.update(g, tile);
+//			System.out.println(enemy.getX() + " " + enemy.getX());
+//		}
 		
 		for(int i=0; i<40; i++){
 			for(int j=0; j<30; j++){
