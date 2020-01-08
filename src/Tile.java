@@ -54,6 +54,7 @@ public class Tile {
 		g.setStroke(new BasicStroke(2));
 		g.setColor(Color.BLACK);
 		g.drawRect(unit * i, unit * j, unit, unit);
+		weight[i][j] = 1;
 	}
 	
 	public void drawSpawner(int i, int j, Graphics2D g, int unit, boolean visible){
@@ -100,5 +101,9 @@ public class Tile {
 	}
 	public void setWeight(int i, int j, int val){
 		weight[i][j] = val;
-	}	
+	}
+	public int[][] getWeightAll(){
+		return weight;
+	}
+	
 }

@@ -4,38 +4,27 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Enemy {
-	private String name;
 	private int x;
 	private int y;
 	private int velx = 1;
 	private int vely = 1;
-	
 
 	// buat djikstra
-	int [][] edges = new int[1000][1000];
 	boolean[][] visited = new boolean[1000][1000];
 	int[][] totalDistance = new int[1000][1000];
 	int[] parentX = new int[1000];
 	int[] parentY = new int[1000];
 	// end djikstra
 	
+	int [][] weight = new int [200][200];
+	
 	private int unit = 20;
-	private Tile tile = new Tile();
-	public Enemy(int x, int y, String name) {
+	public Enemy(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.name = name;
-	}
-	
-	public String getName() {
-		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void update(Graphics2D g){
+	public void update(Graphics2D g, Tile tile){
 		Djikstra();
 		tile.drawEnemy(this.x, this.y, g, unit);
 	}
@@ -46,9 +35,8 @@ public class Enemy {
 			this.y = currY;
 			return;
 		}
+		System.out.println(currX + "-" + currY);
 		showPath(parentX[currX], parentY[currY]);
-//		System.out.print(currX + "-" + currY + " ");
-		
 	}
 	
 	// dest x = 20 , y = 25
@@ -78,39 +66,35 @@ public class Enemy {
 		
 		while(pq.isEmpty() == false) {
 			Node curr = pq.poll();
-			int currX = curr.x;
-			int currY = curr.y;
-			int cost = curr.cost;
-			
-			if(visited[x][y] == true) continue;
-			visited[x][y] = true;
-			
-			if(x == 20 && y == 25) break;
+			int currX = curr.getI();
+			int currY = curr.getJ();
+			int cost = curr.getCost();
+			if(visited[currX][currY] == true) continue;
+			visited[currX][currY] = true;
+			if(currX == 20 && currY == 25){
+				break;
+			}
 			int rcc[] = {1, -1, 0 ,0};
-			int dcc[] = {0,0,-1,1};
+			int dcc[] = {0,0,1,-1};
+			if(currX == 20 || currY == 24)System.out.println(parentX[20] + " " + parentY[24]);
 			
 			for (int i = 0; i < 4; i++){
-				int totalCost = edges[currX + rcc[i]][currY + dcc[i]] + cost;
-				if(edges[i][j] != -1 && totalCost < totalDistance[currX + rcc[i]][currY + dcc[i]]){
-					pq.add(new Node(i, j, totalCost));
-					totalDistance[i][j] = totalCost;
+				int totalCost = weight[currX + rcc[i]][currY + dcc[i]] + cost;
+				if(weight[currX + rcc[i]][currY + dcc[i]] != -1 && totalCost < totalDistance[currX + rcc[i]][currY + dcc[i]]){
+					if(currX + rcc[i] == 20 || currY + dcc[i] == 25){
+						System.out.println("AY " + currX + " " + currY + " " + totalCost);
+						System.out.println(weight[currX + rcc[i]][currY + dcc[i]]);
+						System.out.println(cost);
+						System.out.println("PARENT : " + parentX[currX] + " " + parentY[currY]);
+					}
+					pq.add(new Node(currX + rcc[i], currY + dcc[i], totalCost));
+					totalDistance[currX + rcc[i]][currY + dcc[i]] = totalCost;
 					parentX[currX + rcc[i]] = currX;
 					parentY[currY + dcc[i]] = currY;
 				}
-//				
-//				for(int j = 0; j < 30; j++){
-//					int totalCost = edges[i][j] + cost;
-//					if(edges[i][j] != -1 && totalCost < totalDistance[i][j]){
-//						pq.add(new Node(i, j, totalCost));
-//						totalDistance[i][j] = totalCost;
-//						parentX[i] = currX;
-//						parentY[j] = currY;
-//					}
-//				}
 			}
 		}
 		showPath(20, 25);
-		
 	}
 
 	
@@ -139,9 +123,6 @@ public class Enemy {
 	public void setUnit(int unit) {
 		this.unit = unit;
 	}
-	public Tile getTile() {
-		return tile;
-	}
 	public int getVelx() {
 		return velx;
 	}
@@ -158,10 +139,8 @@ public class Enemy {
 		this.vely = vely;
 	}
 
-	public void setTile(Tile tile) {
-		this.tile = tile;
+	public void setWeight(int[][] weight){
+		this.weight = weight;
 	}
-
-	
 	
 }

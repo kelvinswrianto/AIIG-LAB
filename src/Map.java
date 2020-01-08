@@ -51,9 +51,9 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-		enemies.add(new Enemy(7, 6, "kelvin"));
-		enemies.add(new Enemy(10, 18, "vincent"));
-		enemies.add(new Enemy(25, 7, "kevin"));
+		enemies.add(new Enemy(7, 6));
+		enemies.add(new Enemy(10, 18));
+		enemies.add(new Enemy(25, 7));
 		gameThread = new Thread(this::run);
 		gameThread.start();
 	}
@@ -65,7 +65,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		x1 = (int) ((Math.random() * ((max - min) + 1)) + min);
 		y1 = (int) ((Math.random() * ((max - min) + 1)) + min);
 		
-		while(running){
+//		while(running){
 			System.out.println("running");
 			// jalan miring , test
 			repaint();
@@ -75,8 +75,9 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(x1 > 40 || y1 > 40) break;
-		}
+//			if(x1 > 40 || y1 > 40) break;
+//			
+//		}
 	}
 	
 	@Override
@@ -101,13 +102,13 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				if(i == 20 && j == 25){
 					tile.drawHome(i, j, g, unit);
 				}
-				
 			}
 		}
 		
 		for (Enemy enemy : enemies) {
-			System.out.println(enemy.getName());
-			enemy.update(g);
+//			System.out.println(enemy.getName());
+			enemy.setWeight(tile.getWeightAll());
+			enemy.update(g, tile);
 		}
 		
 		for(int i=0; i<40; i++){
