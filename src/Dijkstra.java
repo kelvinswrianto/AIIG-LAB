@@ -7,6 +7,7 @@ public class Dijkstra {
 	Pair parent[][] = new Pair[100][100];
 	
 	int node[][] = new int[200][200];
+	int newX, newY;
 	
 	boolean visited[][] = new boolean[200][200];
 	int totalDistance[][] = new int[200][200];

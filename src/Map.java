@@ -112,6 +112,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 //			enemy.update(g, tile);
 //			System.out.println(enemy.getX() + " " + enemy.getX());
 //		}
+
 		
 		for(int i=0; i<40; i++){
 			for(int j=0; j<30; j++){

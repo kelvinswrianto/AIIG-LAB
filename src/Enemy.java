@@ -1,12 +1,22 @@
 import java.awt.Graphics2D;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class Enemy {
 	private int x = 3;
 	private int y = 3;
 	private int velx = 1;
 	private int vely = 1;
+
+	// buat djikstra
+	boolean[][] visited = new boolean[1000][1000];
+	int[][] totalDistance = new int[1000][1000];
+	int[] parentX = new int[1000];
+	int[] parentY = new int[1000];
+	// end djikstra
 	
-	private int[][] weight = new int[200][200];
+	int [][] weight = new int [200][200];
 	
 	private int unit = 20;
 	public Enemy(int x, int y) {
