@@ -51,7 +51,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-		enemies.add(new Enemy(15, 15));
+		enemies.add(new Enemy(6, 7));
 //		enemies.add(new Enemy(10, 18));
 //		enemies.add(new Enemy(25, 7));
 		gameThread = new Thread(this::run);
@@ -76,6 +76,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				e.printStackTrace();
 			}
 			if(x1 > 40 || y1 > 40) break;
+			
 		}
 	}
 	

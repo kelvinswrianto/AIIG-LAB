@@ -26,22 +26,22 @@ public class Enemy {
 
 	public void update(Graphics2D g, Tile tile){
 		Dijkstra d = new Dijkstra(x, y, weight);
-		d.showPath(20, 25);
-//		d.newX
-//		int dir = 1;
-//		if(dir == 1){
-//			x++;
-//		}
-//		if(dir == 2){
-//			x--;
-//		}
-//		if(dir == 3){
-//			y++;
-//		}
-//		if(dir == 4){
-//			y--;
-//		}
-		tile.drawEnemy(d.newX, d.newY, g, unit);
+		int dir = d.showPath(20, 25, x, y);
+		System.out.println(dir);
+		if(dir == 1){
+			y--;
+		}
+		if(dir == 2){
+			y++;
+		}
+		if(dir == 3){
+			x--;
+		}
+		if(dir == 4){
+			x++;
+		}
+		
+		tile.drawTower(x, y, g, unit);
 	}
 	
 	public int getX() {
