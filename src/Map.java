@@ -101,7 +101,6 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				if(i == 20 && j == 25){
 					tile.drawHome(i, j, g, unit);
 				}
-				
 			}
 		}
 		
@@ -111,15 +110,15 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 			vely = enemy.getVely();
 			enemy.setX(enemy.getX()+velx);
 			enemy.setY(enemy.getY()+vely);
-			enemy.update(g);
+			enemy.update(g, tile);
 		}
 		
-//		for(int i=0; i<40; i++){
-//			for(int j=0; j<30; j++){
-//				System.out.print(tile.getWeight(i, j) + " ");
-//			}
-//			System.out.println();
-//		}
+		for(int i=0; i<40; i++){
+			for(int j=0; j<30; j++){
+				System.out.print(tile.getWeight(i, j) + " ");
+			}
+			System.out.println();
+		}
 	}
 
 	@Override

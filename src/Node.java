@@ -1,21 +1,26 @@
 
 
 public class Node {
-	int index, cost;
+	int  cost;
+	int i, j;
 	
-	public Node(int index, int cost) {
-		this.index = index;
+	public Node(int i, int j, int cost) {
+		this.i = i;
+		this.j = j;
 		this.cost = cost;
 	}
-
-	public int getIndex() {
-		return index;
+	public int getI() {
+		return i;
 	}
-
-	public void setIndex(int index) {
-		this.index = index;
+	public void setI(int i) {
+		this.i = i;
 	}
-
+	public int getJ() {
+		return j;
+	}
+	public void setJ(int j) {
+		this.j = j;
+	}
 	public int getCost() {
 		return cost;
 	}

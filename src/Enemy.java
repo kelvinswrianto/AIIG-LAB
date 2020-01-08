@@ -9,13 +9,12 @@ public class Enemy {
 	private int[][] weight = new int[200][200];
 	
 	private int unit = 20;
-
 	public Enemy(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public void update(Graphics2D g){
+	public void update(Graphics2D g, Tile tile){
 		
 		if(x >= 37){
 			velx = -1;
@@ -60,9 +59,6 @@ public class Enemy {
 	public void setUnit(int unit) {
 		this.unit = unit;
 	}
-	public Tile getTile() {
-		return tile;
-	}
 	public int getVelx() {
 		return velx;
 	}
@@ -77,10 +73,6 @@ public class Enemy {
 
 	public void setVely(int vely) {
 		this.vely = vely;
-	}
-
-	public void setTile(Tile tile) {
-		this.tile = tile;
 	}
 
 	public void setWeight(int[][] weight){
