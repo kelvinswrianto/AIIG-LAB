@@ -29,16 +29,16 @@ public class Enemy {
 		int dir = d.showPath(20, 25, x, y);
 		System.out.println(dir);
 		if(dir == 1){
-			y--;
-		}
-		if(dir == 2){
-			y++;
-		}
-		if(dir == 3){
 			x--;
 		}
-		if(dir == 4){
+		if(dir == 2){
 			x++;
+		}
+		if(dir == 3){
+			y--;
+		}
+		if(dir == 4){
+			y++;
 		}
 		
 		tile.drawTower(x, y, g, unit);
