@@ -73,6 +73,7 @@ public class Dijkstra {
 		
 	}
 	public int showPath(int i, int j, int newX, int newY){
+		if(i == newX && j == newY) return 0;
 		int ret = 0;
 		if(parent[i][j].getFirst() == newX && parent[i][j].getSecond() == newY){
 			System.out.println(i + " " + j + " " + newX + " " + newY );

@@ -19,16 +19,16 @@ public class Enemy {
 		int dir = d.showPath(20, 25, x, y);
 		System.out.println(dir);
 		if(dir == 1){
-			x++;
-		}
-		if(dir == 2){
 			x--;
 		}
+		if(dir == 2){
+			x++;
+		}
 		if(dir == 3){
-			y++;
+			y--;
 		}
 		if(dir == 4){
-			y--;
+			y++;
 		}
 		
 		tile.drawTower(x, y, g, unit);
