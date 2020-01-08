@@ -52,8 +52,8 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		this.h = h;
 		this.unit = 20;
 		enemies.add(new Enemy(6, 7));
-		enemies.add(new Enemy(10, 18));
-		enemies.add(new Enemy(25, 7));
+		enemies.add(new Enemy(7, 6));
+		enemies.add(new Enemy(8, 7));
 		gameThread = new Thread(this::run);
 		gameThread.start();
 	}
@@ -99,16 +99,19 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 				// draw home
 				if(i == 20 && j == 25){
-					tile.drawHome(i, j, g, unit);
+					tile.drawTower(i, j, g, unit);
 				}
+//				if(i == 17 && j == 17){
+//					tile.drawTower(i, j, g, unit);
+//				}
 			}
 		}
 		
-		for (Enemy enemy : enemies) {
-			enemy.setWeight(tile.getWeightAll());
-			enemy.update(g, tile);
-			System.out.println(enemy.getX() + " " + enemy.getX());
-		}
+//		for (Enemy enemy : enemies) {
+//			enemy.setWeight(tile.getWeightAll());
+//			enemy.update(g, tile);
+//			System.out.println(enemy.getX() + " " + enemy.getX());
+//		}
 		
 		for(int i=0; i<40; i++){
 			for(int j=0; j<30; j++){

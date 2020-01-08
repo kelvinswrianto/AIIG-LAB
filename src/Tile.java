@@ -50,6 +50,7 @@ public class Tile {
 		// add weight tower
 		weight[i][j] += 500-initial_weight;
 	}
+	
 	public void drawNormalTile(int i, int j, Graphics2D g, int unit){
 		g.setStroke(new BasicStroke(2));
 		g.setColor(Color.BLACK);

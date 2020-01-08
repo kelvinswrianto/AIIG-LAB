@@ -31,7 +31,7 @@ public class Enemy {
 			y++;
 		}
 		
-		tile.drawTower(x, y, g, unit);
+		tile.drawEnemy(x, y, g, unit);
 	}
 	
 	public int getX() {
