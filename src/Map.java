@@ -44,6 +44,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	
 	Vector<Pair> towers = new Vector<>();
 	Vector<Pair> spawners = new Vector<>();
+	Vector<Pair> spawners_remove = new Vector<>();
 	java.util.Map<Pair,Boolean> maps = new HashMap<Pair,Boolean>();
 	
 	private Thread gameThread;
@@ -98,6 +99,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				Random rand = new Random();
 				int spawns = rand.nextInt(spawners.size());
 				Pair elementAt = spawners.remove(spawns);
+				spawners_remove.add(elementAt);
 //				System.out.println("SPAWN! " + elementAt.getFirst() +" " + elementAt.getSecond());
 				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
 			}
@@ -136,7 +138,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 //						maps.put(pairs, true);
 					}
 //					if(maps.get(pairs) == true) 
-					tile.drawSpawner(i, j, g, unit, true);
+					
 //					else tile.drawSpawner(i, j, g, unit, false);
 				}
 				// draw home
@@ -145,12 +147,15 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 			}
 		}
-
+		
 		if(this.x != -1 && this.y != -1){
 			tile.drawTower(x/unit, y/unit, g, unit);
 			this.x = -1;
 			this.y = -1;
 			System.out.println("running draw tower");
+		}
+		for (Pair sr : spawners) {
+			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
 		}
 		
 		for (Pair tower : towers) {
@@ -167,11 +172,6 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 
 		this.boot = false;
 		
-//		for (Enemy enemy : enemies) {
-//			enemy.setWeight(tile.getWeightAll());
-//			enemy.update(g, tile);
-//			
-//		}
 		
 //		for(int i=0; i<40; i++){
 //			for(int j=0; j<30; j++){
@@ -324,3 +324,4 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		
 	}
 }
+
