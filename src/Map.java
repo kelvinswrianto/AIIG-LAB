@@ -143,7 +143,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 				// draw home
 				if(i == 20 && j == 25){
-					tile.drawTower(i, j, g, unit);
+					tile.drawHome(i, j, g, unit);
 				}
 			}
 		}
@@ -300,10 +300,16 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		int pixelClickX = e.getX()/unit;
 		int pixelClickY = e.getY()/unit;
 		
+		if(pixelClickX == 20 && pixelClickY == 25) return;
+		
 		if(!tile.outOfBound(pixelClickX, pixelClickY)){
 //			if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
 			for (Pair sr : spawners) {
 				if(pixelClickX == sr.getFirst() && pixelClickY == sr.getSecond())
+					return;
+			}
+			for (Pair tower : towers) {
+				if(pixelClickX == tower.getFirst() && pixelClickY == tower.getSecond())
 					return;
 			}
 			towers.add(new Pair(e.getX()/unit, e.getY()/unit));
