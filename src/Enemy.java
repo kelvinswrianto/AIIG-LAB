@@ -27,7 +27,7 @@ public class Enemy {
 	public void update(Graphics2D g, Tile tile){
 		Dijkstra d = new Dijkstra(x, y, weight);
 		int dir = d.showPath(20, 25, x, y);
-		System.out.println(dir);
+//		System.out.println(dir);
 		if(dir == 1){
 			x--;
 		}
