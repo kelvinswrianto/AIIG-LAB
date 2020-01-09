@@ -26,23 +26,30 @@ import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Map extends JPanel implements MouseListener, KeyListener{
 	char map[][] = new char[50][50];
 	int w, h, unit; 
+	int x=-1, y=-1;
 	Tile tile = new Tile();
 	
 	Vector<Pair> spawners = new Vector<>();
 	
 	Vector<Enemy> enemies = new Vector<>();
 	
-	
+	Vector<Pair> towers = new Vector<>();
+	Vector<Pair> spawners_remove = new Vector<>();
+	java.util.Map<Pair,Boolean> maps = new HashMap<Pair,Boolean>();
 	
 	private Thread gameThread;
+	private boolean boot = true;
 	private boolean running = true;
 	private double FPS = 60;
 	private double NANOSECOND_PER_FRAME = 1e9/FPS;
@@ -53,9 +60,27 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-		enemies.add(new Enemy(6, 7));
-//		enemies.add(new Enemy(10, 18));
-//		enemies.add(new Enemy(25, 7));
+//		enemies.add(new Enemy(2, 2));
+//		enemies.add(new Enemy(20, 7));
+//		enemies.add(new Enemy(18, 6));
+//		enemies.add(new Enemy(28, 2));
+//		enemies.add(new Enemy(28, 20));
+//		enemies.add(new Enemy(27, 2));
+//		enemies.add(new Enemy(26, 2));
+//		enemies.add(new Enemy(25, 2));
+//		enemies.add(new Enemy(24, 2));
+//		enemies.add(new Enemy(23, 2));
+//		enemies.add(new Enemy(26, 3));
+//		enemies.add(new Enemy(25, 3));
+//		enemies.add(new Enemy(24, 3));
+//		enemies.add(new Enemy(23, 3));
+		
+		towers.add(new Pair(19,20));
+		towers.add(new Pair(25,20));
+		towers.add(new Pair(16,24));
+		towers.add(new Pair(26,24));
+		addMouseListener(this);
+		
 		gameThread = new Thread(this::run);
 		gameThread.start();
 	}
@@ -70,14 +95,18 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		while(running){
 			System.out.println("running");
 			repaint();
-//			Random random = new Random();
-//			int spawns = random.nextInt(spawners.size());
-//			Pair coordinate = spawners.remove(spawns);
-//			enemies.add(new Enemy(coordinate.getFirst(), coordinate.getSecond()));
-//			System.out.println(coordinate.getFirst());
-			// jalan miring , test
+			if(!boot){
+				Random rand = new Random();
+				int spawns = rand.nextInt(spawners.size());
+				Pair elementAt = spawners.remove(spawns);
+				spawners_remove.add(elementAt);
+//				System.out.println("SPAWN! " + elementAt.getFirst() +" " + elementAt.getSecond());
+				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
+			}
+			
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
+
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -103,8 +132,14 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 				// draw spawner
 				if(i == 1 && j >= 1 && j <= 28 || i == 38 && j >= 1 && j <= 28 || j == 1 && i >= 1 && i <= 38){
-					tile.drawSpawner(i, j, g, unit, true);
-					spawners.add(new Pair(i, j));
+					Pair pairs = new Pair(i, j);
+					if(boot){
+						spawners.add(pairs);
+//						maps.put(pairs, true);
+					}
+//					if(maps.get(pairs) == true) 
+					
+//					else tile.drawSpawner(i, j, g, unit, false);
 				}
 				// draw home
 				if(i == 20 && j == 25){
@@ -113,19 +148,132 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 			}
 		}
 		
-		for (Enemy enemy : enemies) {
-//			System.out.println(enemy.getName());
-			enemy.setWeight(tile.getWeightAll());
-			enemy.update(g, tile);
-			System.out.println(enemy.getX() + " " + enemy.getX());
+		if(this.x != -1 && this.y != -1){
+			tile.drawTower(x/unit, y/unit, g, unit);
+			this.x = -1;
+			this.y = -1;
+			System.out.println("running draw tower");
+		}
+		for (Pair sr : spawners) {
+			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
 		}
 		
-		for(int i=0; i<40; i++){
-			for(int j=0; j<30; j++){
-				System.out.print(tile.getWeight(i, j) + " ");
-			}
-			System.out.println();
+		for (Pair tower : towers) {
+			tile.drawTower(tower.getFirst(), tower.getSecond(), g, unit);
 		}
+		
+		
+		for (Enemy enemy : enemies) {
+			enemy.setWeight(tile.getWeightAll());
+			enemy.update(g, tile);
+//			System.out.println(enemy.getX() + " " + enemy.getX());
+
+		}
+
+		this.boot = false;
+		
+		
+//		for(int i=0; i<40; i++){
+//			for(int j=0; j<30; j++){
+//				System.out.print(tile.getWeight(i, j) + " ");
+//			}
+//			System.out.println();
+//		}
+
+		tile.drawHome(41, 2, g, unit);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Home", 865, 55);
+		
+		tile.drawEnemyBase(818, 65, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy Base Color", 865, 82);
+
+		tile.drawEnemyInfo(818, 93, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy in Full Health", 865, 110);
+		
+		tile.drawTowerInfo(821, 121, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Tower", 865, 135);
+		
+		tile.drawSpawnerInfo(823, 147, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy Spawner", 865, 160);
+		
+		tile.drawWallInfo(821, 167, g);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Wall", 865, 183);
+
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("HP:", 820, 225);
+		//ATUR JUMLAH HATI ===============
+		for (int i = 0; i < 3; i++) {
+			tile.drawHeart(860+i*35,208,g);
+		}
+		//==================================
+
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Coin:", 820, 260);
+		tile.drawCoin(870,243,g);
+		g.setColor(Color.BLACK);
+		g.drawString("  X", 900, 260);
+		
+		//i ini contoh angka, ubah di sini sesuai jumlah coin nnt==============
+		int i = 1;
+		String coin = Integer.toString(i);
+		g.drawString(coin, 921, 260);
+		//=============================================
+		
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Enemy:", 820, 295);
+		tile.drawEnemyInfo(890, 278, g);
+		g.setColor(Color.BLACK);
+		g.drawString("  X", 917, 295);
+		
+		//i ini contoh angka, ubah di sini sesuai jumlah enemy nnt==============
+		int enem = 5;
+		String enemies = Integer.toString(enem);
+		g.drawString(enemies, 937, 295);
+		//=============================================	
+		
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Calibri", Font.PLAIN, 19));
+		g.drawString("Spawner:", 820, 333);
+		tile.drawSpawnerInfo(900, 320, g);
+		g.setColor(Color.BLACK);
+		g.drawString("  X", 923, 333);
+		
+		//i ini contoh angka, ubah di sini sesuai jumlah spawners nnt==============
+		int spaw = 87;
+		String spawners = Integer.toString(spaw);
+		g.drawString(spawners, 944, 333);
+		//=============================================
+		
+		g.setColor(Color.BLACK);
+		if(true){ //atur nnti pas P di tekan atau ngaknya disini==================
+			g.setFont(new Font("Calibri", Font.BOLD, 27));
+			g.drawString("Press P to Pause", 820, 405);
+		}
+		else{
+			g.setFont(new Font("Calibri", Font.BOLD, 27));
+			g.drawString("Press P to Play", 820, 405);
+		}//================================================================
+
+		g.setFont(new Font("Calibri", Font.BOLD, 27));
+		g.drawString("Press Esc to Exit", 820, 460);
+		
+		g.setFont(new Font("Calibri", Font.BOLD, 37));
+		g.drawString("Tower", 858, 537);
+		g.setFont(new Font("Calibri", Font.BOLD, 37));
+		g.drawString("Defense", 846, 587);
 	}
 
 	@Override
@@ -149,7 +297,17 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
+		int pixelClickX = e.getX()/unit;
+		int pixelClickY = e.getY()/unit;
 		
+		if(!tile.outOfBound(pixelClickX, pixelClickY)){
+//			if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
+			for (Pair sr : spawners) {
+				if(pixelClickX == sr.getFirst() && pixelClickY == sr.getSecond())
+					return;
+			}
+			towers.add(new Pair(e.getX()/unit, e.getY()/unit));
+		}
 	}
 
 	@Override
@@ -176,3 +334,4 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		
 	}
 }
+
