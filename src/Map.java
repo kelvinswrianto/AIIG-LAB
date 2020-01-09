@@ -58,19 +58,20 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-		enemies.add(new Enemy(20, 7));
-		enemies.add(new Enemy(18, 6));
-		enemies.add(new Enemy(28, 2));
-		enemies.add(new Enemy(28, 20));
-		enemies.add(new Enemy(27, 2));
-		enemies.add(new Enemy(26, 2));
-		enemies.add(new Enemy(25, 2));
-		enemies.add(new Enemy(24, 2));
-		enemies.add(new Enemy(23, 2));
-		enemies.add(new Enemy(26, 3));
-		enemies.add(new Enemy(25, 3));
-		enemies.add(new Enemy(24, 3));
-		enemies.add(new Enemy(23, 3));
+//		enemies.add(new Enemy(2, 2));
+//		enemies.add(new Enemy(20, 7));
+//		enemies.add(new Enemy(18, 6));
+//		enemies.add(new Enemy(28, 2));
+//		enemies.add(new Enemy(28, 20));
+//		enemies.add(new Enemy(27, 2));
+//		enemies.add(new Enemy(26, 2));
+//		enemies.add(new Enemy(25, 2));
+//		enemies.add(new Enemy(24, 2));
+//		enemies.add(new Enemy(23, 2));
+//		enemies.add(new Enemy(26, 3));
+//		enemies.add(new Enemy(25, 3));
+//		enemies.add(new Enemy(24, 3));
+//		enemies.add(new Enemy(23, 3));
 		
 		towers.add(new Pair(19,20));
 		towers.add(new Pair(25,20));
@@ -97,12 +98,12 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				Random rand = new Random();
 				int spawns = rand.nextInt(spawners.size());
 				Pair elementAt = spawners.remove(spawns);
-				System.out.println("SPAWN! " + elementAt.getFirst() +" " + elementAt.getSecond());
-//				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
+//				System.out.println("SPAWN! " + elementAt.getFirst() +" " + elementAt.getSecond());
+				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
 			}
 			
 			try {
-				Thread.sleep(500);
+				Thread.sleep(1000);
 
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -160,6 +161,8 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		for (Enemy enemy : enemies) {
 			enemy.setWeight(tile.getWeightAll());
 			enemy.update(g, tile);
+//			System.out.println(enemy.getX() + " " + enemy.getX());
+
 		}
 
 		this.boot = false;
@@ -170,12 +173,12 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 //			
 //		}
 		
-		for(int i=0; i<40; i++){
-			for(int j=0; j<30; j++){
-				System.out.print(tile.getWeight(i, j) + " ");
-			}
-			System.out.println();
-		}
+//		for(int i=0; i<40; i++){
+//			for(int j=0; j<30; j++){
+//				System.out.print(tile.getWeight(i, j) + " ");
+//			}
+//			System.out.println();
+//		}
 
 		tile.drawHome(41, 2, g, unit);
 		g.setColor(Color.BLACK);
