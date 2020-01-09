@@ -109,7 +109,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				e.printStackTrace();
 			}
 			if(x1 > 40 || y1 > 40) break;
-			break;
+//			break;
 		}
 	}
 	
@@ -160,16 +160,14 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		for (Enemy enemy : enemies) {
 			enemy.setWeight(tile.getWeightAll());
 			enemy.update(g, tile);
-			System.out.println(enemy.getX() + " " + enemy.getX());
 		}
 
 		this.boot = false;
 		
 //		for (Enemy enemy : enemies) {
-////			System.out.println(enemy.getName());
 //			enemy.setWeight(tile.getWeightAll());
 //			enemy.update(g, tile);
-//			System.out.println(enemy.getX() + " " + enemy.getX());
+//			
 //		}
 		
 		for(int i=0; i<40; i++){
