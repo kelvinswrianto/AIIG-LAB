@@ -36,6 +36,8 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	int w, h, unit; 
 	Tile tile = new Tile();
 	
+	Vector<Pair> spawners = new Vector<>();
+	
 	Vector<Enemy> enemies = new Vector<>();
 	
 	
@@ -67,8 +69,13 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		
 		while(running){
 			System.out.println("running");
-			// jalan miring , test
 			repaint();
+//			Random random = new Random();
+//			int spawns = random.nextInt(spawners.size());
+//			Pair coordinate = spawners.remove(spawns);
+//			enemies.add(new Enemy(coordinate.getFirst(), coordinate.getSecond()));
+//			System.out.println(coordinate.getFirst());
+			// jalan miring , test
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -76,6 +83,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				e.printStackTrace();
 			}
 			if(x1 > 40 || y1 > 40) break;
+//			break;
 		}
 	}
 	
@@ -96,10 +104,11 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				// draw spawner
 				if(i == 1 && j >= 1 && j <= 28 || i == 38 && j >= 1 && j <= 28 || j == 1 && i >= 1 && i <= 38){
 					tile.drawSpawner(i, j, g, unit, true);
+					spawners.add(new Pair(i, j));
 				}
 				// draw home
 				if(i == 20 && j == 25){
-					tile.drawHome(i, j, g, unit);
+					tile.drawTower(i, j, g, unit);
 				}
 			}
 		}
