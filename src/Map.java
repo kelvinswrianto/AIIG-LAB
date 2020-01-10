@@ -95,7 +95,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 			System.out.println("running");
 			// jalan miring , test
 			repaint();
-			if(!boot){
+			if(!boot && !spawners.isEmpty()){
 				Random rand = new Random();
 				int spawns = rand.nextInt(spawners.size());
 				Pair elementAt = spawners.remove(spawns);
@@ -132,14 +132,10 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 				// draw spawner
 				if(i == 1 && j >= 1 && j <= 28 || i == 38 && j >= 1 && j <= 28 || j == 1 && i >= 1 && i <= 38){
-					Pair pairs = new Pair(i, j);
 					if(boot){
+						Pair pairs = new Pair(i, j);
 						spawners.add(pairs);
-//						maps.put(pairs, true);
-					}
-//					if(maps.get(pairs) == true) 
-					
-//					else tile.drawSpawner(i, j, g, unit, false);
+					} 
 				}
 				// draw home
 				if(i == 20 && j == 25){
