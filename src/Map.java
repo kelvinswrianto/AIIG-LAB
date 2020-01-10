@@ -40,10 +40,11 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	int x=-1, y=-1;
 	Tile tile = new Tile();
 	
+	Vector<Pair> spawners = new Vector<>();
+	
 	Vector<Enemy> enemies = new Vector<>();
 	
 	Vector<Pair> towers = new Vector<>();
-	Vector<Pair> spawners = new Vector<>();
 	Vector<Pair> spawners_remove = new Vector<>();
 	java.util.Map<Pair,Boolean> maps = new HashMap<Pair,Boolean>();
 	
@@ -93,7 +94,6 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		
 		while(running){
 			System.out.println("running");
-			// jalan miring , test
 			repaint();
 			if(!boot && !spawners.isEmpty()){
 				Random rand = new Random();
@@ -293,7 +293,23 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		towers.add(new Pair(e.getX()/unit, e.getY()/unit));
+		int pixelClickX = e.getX()/unit;
+		int pixelClickY = e.getY()/unit;
+		
+		if(pixelClickX == 20 && pixelClickY == 25) return;
+		
+		if(!tile.outOfBound(pixelClickX, pixelClickY)){
+//			if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
+			for (Pair sr : spawners) {
+				if(pixelClickX == sr.getFirst() && pixelClickY == sr.getSecond())
+					return;
+			}
+			for (Pair tower : towers) {
+				if(pixelClickX == tower.getFirst() && pixelClickY == tower.getSecond())
+					return;
+			}
+			towers.add(new Pair(e.getX()/unit, e.getY()/unit));
+		}
 	}
 
 	@Override

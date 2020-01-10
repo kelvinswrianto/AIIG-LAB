@@ -15,12 +15,22 @@ public class Tile {
 		}
 	}
 	
+	public boolean outOfBound(int i, int j){
+		if(i <= 0 || j <= 0 || i >= 39 || j >= 29)
+			return true;
+		return false;
+	}
+	
 	public void drawTower(int i, int j, Graphics2D g, int unit){
 		 // draw range tower
+//		i == 0 || j == 0 || i == 39 || j == 29
+		
 		  int dirx[] = {+1,+1,+0,+0,-1,-1,+1,-1};
 		  int diry[] = {+1,-1,+1,-1,+1,-1,+0,+0};
 		  for(int x=0; x<8; x++){
-			  g.setColor(new Color(255, 0, 255, 60));
+			  if(outOfBound(i+dirx[x], j+diry[x])) 
+				  continue;
+			  g.setColor(new Color(255, 0, 255, 60)); 
 			  g.fillRect(unit * (i+dirx[x]), unit * (j+diry[x]), unit, unit);
 			  weight[i+dirx[x]][j+diry[x]] += 27-initial_weight;
 		  }
@@ -28,6 +38,8 @@ public class Tile {
 		  int dirx2[] = {+2,+2,-2,-2,+0,+0,+2,-2,-1,-1,+1,+1};
 		  int diry2[] = {+1,-1,+1,-1,+2,-2,+0,+0,+2,-2,+2,-2};
 		  for(int x=0; x<12; x++){
+			  if(outOfBound(i+dirx2[x], j+diry2[x]))
+					  continue;
 			  g.setColor(new Color(255, 0, 255, 60));
 			  g.fillRect(unit * (i+dirx2[x]), unit * (j+diry2[x]), unit, unit);
 			  weight[i+dirx2[x]][j+diry2[x]] += 27-initial_weight;
@@ -36,6 +48,8 @@ public class Tile {
 		  int dirx3[] = {+3,-3,+0,+0};
 		  int diry3[] = {+0,+0,+3,-3};
 		  for(int x=0; x<4; x++){
+			  if(outOfBound(i+dirx3[x], j+diry3[x]))
+				  continue;
 			  g.setColor(new Color(255, 0, 255, 60));
 			  g.fillRect(unit * (i+dirx3[x]), unit * (j+diry3[x]), unit, unit);
 			  weight[i+dirx3[x]][j+diry3[x]] += 27-initial_weight;
