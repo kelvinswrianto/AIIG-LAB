@@ -7,7 +7,8 @@ import java.awt.Stroke;
 import java.util.Arrays;
 
 public class Tile {
-	int weight[][] = new int[50][50];
+	int weight[][] = new int[50][50]; 
+	
 	final int initial_weight = 1;
 	public Tile() {
 		for (int[] is : weight) {
@@ -74,6 +75,14 @@ public class Tile {
 	}
 
 	public void drawNormalTile(int i, int j, Graphics2D g, int unit){
+		g.setStroke(new BasicStroke(2));
+		g.setColor(Color.BLACK);
+		g.drawRect(unit * i, unit * j, unit, unit);
+		weight[i][j] = 1;
+	}
+	public void drawNormalTileHovered(int i, int j, Graphics2D g, int unit){
+		g.setColor(new Color(0, 255, 0, 130));
+		g.fillRect(unit * i, unit * j, unit, unit);
 		g.setStroke(new BasicStroke(2));
 		g.setColor(Color.BLACK);
 		g.drawRect(unit * i, unit * j, unit, unit);

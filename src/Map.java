@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.RenderingHints.Key;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -34,11 +35,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Map extends JPanel implements MouseListener, KeyListener{
+public class Map extends JPanel implements MouseListener, KeyListener, MouseMotionListener{
 	char map[][] = new char[50][50];
 	int w, h, unit; 
-	int x=-1, y=-1;
 	Tile tile = new Tile();
+	int hoverX = -1;
+	int hoverY = -1;
 	
 	Vector<Pair> spawners = new Vector<>();
 	
@@ -80,7 +82,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		towers.add(new Pair(16,24));
 		towers.add(new Pair(26,24));
 		addMouseListener(this);
-		
+		addMouseMotionListener(this);
 		gameThread = new Thread(this::run);
 		gameThread.start();
 	}
@@ -105,7 +107,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 			}
 			
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -143,12 +145,10 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 				}
 			}
 		}
-		
-		if(this.x != -1 && this.y != -1){
-			tile.drawTower(x/unit, y/unit, g, unit);
-			this.x = -1;
-			this.y = -1;
-			System.out.println("running draw tower");
+
+		if(hoverX != -1 && hoverY != -1){
+			tile.drawNormalTileHovered(hoverX, hoverY, g, unit);
+			
 		}
 		for (Pair sr : spawners) {
 			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
@@ -159,12 +159,12 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 		}
 		
 		
-		for (Enemy enemy : enemies) {
-			enemy.setWeight(tile.getWeightAll());
-			enemy.update(g, tile);
-//			System.out.println(enemy.getX() + " " + enemy.getX());
-
-		}
+//		for (Enemy enemy : enemies) {
+//			enemy.setWeight(tile.getWeightAll());
+//			enemy.update(g, tile);
+////			System.out.println(enemy.getX() + " " + enemy.getX());
+//
+//		}
 
 		this.boot = false;
 		
@@ -293,6 +293,7 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
+		
 		int pixelClickX = e.getX()/unit;
 		int pixelClickY = e.getY()/unit;
 		
@@ -315,13 +316,11 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -334,6 +333,64 @@ public class Map extends JPanel implements MouseListener, KeyListener{
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+		int mouseX = e.getX()/unit;
+		int mouseY = e.getY()/unit;
+		
+		if(mouseX == 20 && mouseY == 25){
+			hoverX = -1;
+			hoverY = -1;
+			return;
+		}
+		
+		if(!tile.outOfBound(mouseX, mouseY)){
+//			if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
+			for (Pair sr : spawners) {
+				if(mouseX == sr.getFirst() && mouseY == sr.getSecond()){
+					hoverX = -1;
+					hoverY = -1;
+					return;
+				}
+					
+			}
+			for (Pair tower : towers) {
+				if(mouseX == tower.getFirst() && mouseY == tower.getSecond()){
+					hoverX = -1;
+					hoverY = -1;
+					return;
+				}
+					
+			}
+			hoverX = mouseX;
+			hoverY = mouseY;
+		}
+		else{
+			hoverX = -1;
+			hoverY = -1;
+		}
+		
+//		int mouseX = e.getX();
+//		int mouseY = e.getY();
+//		
+//		if(mouseX/unit > 0 && mouseX/unit < 39 && mouseY/unit > 0 && mouseY/unit <29){
+//			hoverX = mouseX;
+//			hoverY = mouseY;
+//		}
+//		else{
+//			hoverX = -1;
+//			hoverY = -1;
+//		}
 	}
 }
 
