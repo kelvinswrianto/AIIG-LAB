@@ -41,6 +41,8 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 	Tile tile = new Tile();
 	int hoverX = -1;
 	int hoverY = -1;
+	boolean placeable;
+	int spawnTime = 3000;
 	
 	Vector<Pair> spawners = new Vector<>();
 	
@@ -51,6 +53,7 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 	java.util.Map<Pair,Boolean> maps = new HashMap<Pair,Boolean>();
 	
 	private Thread gameThread;
+	private Thread spawnThread;
 	private boolean boot = true;
 	private boolean running = true;
 	private double FPS = 60;
@@ -62,20 +65,6 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-//		enemies.add(new Enemy(2, 2));
-//		enemies.add(new Enemy(20, 7));
-//		enemies.add(new Enemy(18, 6));
-//		enemies.add(new Enemy(28, 2));
-//		enemies.add(new Enemy(28, 20));
-//		enemies.add(new Enemy(27, 2));
-//		enemies.add(new Enemy(26, 2));
-//		enemies.add(new Enemy(25, 2));
-//		enemies.add(new Enemy(24, 2));
-//		enemies.add(new Enemy(23, 2));
-//		enemies.add(new Enemy(26, 3));
-//		enemies.add(new Enemy(25, 3));
-//		enemies.add(new Enemy(24, 3));
-//		enemies.add(new Enemy(23, 3));
 		
 		towers.add(new Pair(19,20));
 		towers.add(new Pair(25,20));
@@ -85,6 +74,9 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		addMouseMotionListener(this);
 		gameThread = new Thread(this::run);
 		gameThread.start();
+		spawnThread = new Thread(this::runSpawner);
+		spawnThread.start();
+		
 	}
 	
 	public void run(){
@@ -95,19 +87,12 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		y1 = (int) ((Math.random() * ((max - min) + 1)) + min);
 		
 		while(running){
+			
 			System.out.println("running");
 			repaint();
-			if(!boot && !spawners.isEmpty()){
-				Random rand = new Random();
-				int spawns = rand.nextInt(spawners.size());
-				Pair elementAt = spawners.remove(spawns);
-				spawners_remove.add(elementAt);
-//				System.out.println("SPAWN! " + elementAt.getFirst() +" " + elementAt.getSecond());
-				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
-			}
 			
 			try {
-				Thread.sleep(100);
+				gameThread.sleep(500);
 
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -115,6 +100,31 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 			}
 			if(x1 > 40 || y1 > 40) break;
 //			break;
+		}
+	}
+	
+	public void runSpawner(){
+		
+		while(running){
+			System.out.println("running spawner");
+			if(!boot && !spawners.isEmpty()){
+				Random rand = new Random();
+				int spawns = rand.nextInt(spawners.size());
+				Pair elementAt = spawners.remove(spawns);
+				spawners_remove.add(elementAt);
+//				System.out.println("SPAWN! " + elementAt.getFirst() +" " + elementAt.getSecond());
+				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
+				
+				try {
+					spawnThread.sleep(spawnTime);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(spawnTime > 100){
+					spawnTime -= 100;
+				}
+			}
 		}
 	}
 	
@@ -146,9 +156,13 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 			}
 		}
 
-		if(hoverX != -1 && hoverY != -1){
-			tile.drawNormalTileHovered(hoverX, hoverY, g, unit);
-			
+		if(placeable == true){
+			tile.drawNormalTileHovered(hoverX, hoverY, g, unit, placeable);
+		}
+		else{
+			if(hoverX != -1 && hoverY != -1){
+				tile.drawNormalTileHovered(hoverX, hoverY, g, unit, placeable);
+			}
 		}
 		for (Pair sr : spawners) {
 			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
@@ -159,12 +173,12 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		}
 		
 		
-//		for (Enemy enemy : enemies) {
-//			enemy.setWeight(tile.getWeightAll());
-//			enemy.update(g, tile);
-////			System.out.println(enemy.getX() + " " + enemy.getX());
-//
-//		}
+		for (Enemy enemy : enemies) {
+			enemy.setWeight(tile.getWeightAll());
+			enemy.update(g, tile);
+//			System.out.println(enemy.getX() + " " + enemy.getX());
+
+		}
 
 		this.boot = false;
 		
@@ -349,8 +363,9 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		int mouseY = e.getY()/unit;
 		
 		if(mouseX == 20 && mouseY == 25){
-			hoverX = -1;
-			hoverY = -1;
+			hoverX = mouseX;
+			hoverY = mouseY;
+			placeable = false;
 			return;
 		}
 		
@@ -358,39 +373,30 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 //			if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
 			for (Pair sr : spawners) {
 				if(mouseX == sr.getFirst() && mouseY == sr.getSecond()){
-					hoverX = -1;
-					hoverY = -1;
+					hoverX = mouseX;
+					hoverY = mouseY;
+					placeable = false;
 					return;
-				}
-					
+				}		
 			}
 			for (Pair tower : towers) {
 				if(mouseX == tower.getFirst() && mouseY == tower.getSecond()){
-					hoverX = -1;
-					hoverY = -1;
+					hoverX = mouseX;
+					hoverY = mouseY;
+					placeable = false;
 					return;
 				}
 					
 			}
 			hoverX = mouseX;
 			hoverY = mouseY;
+			placeable = true;
 		}
 		else{
 			hoverX = -1;
 			hoverY = -1;
+			placeable = false;
 		}
-		
-//		int mouseX = e.getX();
-//		int mouseY = e.getY();
-//		
-//		if(mouseX/unit > 0 && mouseX/unit < 39 && mouseY/unit > 0 && mouseY/unit <29){
-//			hoverX = mouseX;
-//			hoverY = mouseY;
-//		}
-//		else{
-//			hoverX = -1;
-//			hoverY = -1;
-//		}
 	}
 }
 

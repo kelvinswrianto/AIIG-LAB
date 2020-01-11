@@ -80,8 +80,14 @@ public class Tile {
 		g.drawRect(unit * i, unit * j, unit, unit);
 		weight[i][j] = 1;
 	}
-	public void drawNormalTileHovered(int i, int j, Graphics2D g, int unit){
-		g.setColor(new Color(0, 255, 0, 130));
+	public void drawNormalTileHovered(int i, int j, Graphics2D g, int unit, boolean placeable){
+		if(placeable){
+			g.setColor(new Color(0, 255, 0, 130));
+		}
+		else{
+			g.setColor(new Color(0, 0, 0, 130));
+		}
+		
 		g.fillRect(unit * i, unit * j, unit, unit);
 		g.setStroke(new BasicStroke(2));
 		g.setColor(Color.BLACK);
