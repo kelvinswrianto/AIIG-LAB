@@ -28,6 +28,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
@@ -54,11 +55,10 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 	
 	private Thread gameThread;
 	private Thread spawnThread;
+	private Thread enemyThread;
 	private boolean boot = true;
 	private boolean running = true;
-	private double FPS = 60;
-	private double NANOSECOND_PER_FRAME = 1e9/FPS;
-	private double SECOND_PER_FRAME = 1/FPS;
+	
 	private int x1 = 3, y1 = 3;
 	private int velx = 1, vely = 1;
 	public Map(int w, int h ) {
@@ -76,7 +76,6 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		gameThread.start();
 		spawnThread = new Thread(this::runSpawner);
 		spawnThread.start();
-		
 	}
 	
 	public void run(){
@@ -87,19 +86,15 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		y1 = (int) ((Math.random() * ((max - min) + 1)) + min);
 		
 		while(running){
-			
 			System.out.println("running");
 			repaint();
-			
 			try {
 				gameThread.sleep(500);
-
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if(x1 > 40 || y1 > 40) break;
-//			break;
 		}
 	}
 	
@@ -127,7 +122,6 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 			}
 		}
 	}
-	
 	@Override
 	public void paint(Graphics gg) {
 		super.paint(gg);
@@ -164,6 +158,7 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 				tile.drawNormalTileHovered(hoverX, hoverY, g, unit, placeable);
 			}
 		}
+		
 		for (Pair sr : spawners) {
 			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
 		}
@@ -171,17 +166,26 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		for (Pair tower : towers) {
 			tile.drawTower(tower.getFirst(), tower.getSecond(), g, unit);
 		}
-		
-		
 		for (Enemy enemy : enemies) {
 			enemy.setWeight(tile.getWeightAll());
 			enemy.update(g, tile);
-//			System.out.println(enemy.getX() + " " + enemy.getX());
-
+		}
+		for (Pair tower : towers) {
+			tile.drawTowerLine(tower.getFirst(), tower.getSecond(), g, unit);
+		}
+		
+		Iterator<Enemy> iterator = enemies.iterator();
+		while(iterator.hasNext()){
+			Enemy enemy = iterator.next();
+			if(tile.getAttack(enemy.getX(), enemy.getY()) > 0){
+				enemy.updateHealth(tile.getAttack(enemy.getX(), enemy.getY()));
+			}
+			if(enemy.getHealth() <= 0 && !enemies.isEmpty()){
+				iterator.remove();
+			}
 		}
 
 		this.boot = false;
-		
 		
 //		for(int i=0; i<40; i++){
 //			for(int j=0; j<30; j++){
@@ -285,7 +289,7 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		g.setFont(new Font("Calibri", Font.BOLD, 37));
 		g.drawString("Defense", 846, 587);
 	}
-
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
