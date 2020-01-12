@@ -59,7 +59,7 @@ public class Enemy {
 	}
 	
 	public void run(){
-		System.out.println("enemy decreased health " + health);
+		
 		while(time > 0){
 			if(health > 0){
 				health -= attackMultiplier;
