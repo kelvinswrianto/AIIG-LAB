@@ -208,13 +208,16 @@ public class Tile {
 		weight[i][j] = 0;
 	}
 	
-	public void drawEnemy(int i, int j, Graphics2D g, int unit){
-		int xPoints[] = {i*unit+10, i*unit, i*unit+19};
-		int yPoints[] = {j*unit, j*unit+10, j*unit+19};
-		g.setColor(Color.RED);
-		g.fillPolygon(xPoints, yPoints, 3);
-		g.setColor(Color.RED);
+	public void drawEnemy(int i, int j, Graphics2D g, int unit, boolean isHalf){
+//		int xPoints[] = {i*unit+10, i*unit, i*unit+19};
+//		int yPoints[] = {j*unit, j*unit+10, j*unit+19};
+		g.setColor(new Color(165, 42, 42));
 		g.fillOval(i*unit+2, j*unit+2, 16, 16);
+		g.setColor(Color.RED);
+		if(!isHalf)
+			g.fillOval(i*unit+2, j*unit+2, 16, 16);
+		else
+			g.fillArc(i*unit+2, j*unit+2, 16, 16, 0, 180);
 		weight[i][j] = 600;
 		enemy[i][j] = 1;
 	}
@@ -240,6 +243,12 @@ public class Tile {
 		Color customColor = new Color(165, 42, 42);
 		g.setColor(customColor);
 		g.fillOval(i, j, 23, 23);
+	}
+	
+	public boolean nearHome(int x, int y){
+		if((x == 19 && y == 25) || (x == 20 && y == 24) || (x == 20 && y == 26) || (x == 21 && y == 25))
+			return true;
+		return false;
 	}
 	
 	public int getWeight(int i, int j){

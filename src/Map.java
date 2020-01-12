@@ -36,7 +36,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Map extends JPanel implements MouseListener, KeyListener, MouseMotionListener{
+public class Map extends JPanel implements KeyListener, MouseListener, MouseMotionListener{
 	char map[][] = new char[50][50];
 	int w, h, unit; 
 	Tile tile = new Tile();
@@ -44,6 +44,10 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 	int hoverY = -1;
 	boolean placeable;
 	int spawnTime = 3000;
+	int coins = 3;
+	int spawnerCount = 92;
+	int lifes = 3;
+	boolean isPaused = false;
 	
 	Vector<Pair> spawners = new Vector<>();
 	
@@ -51,7 +55,6 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 	
 	Vector<Pair> towers = new Vector<>();
 	Vector<Pair> spawners_remove = new Vector<>();
-	java.util.Map<Pair,Boolean> maps = new HashMap<Pair,Boolean>();
 	
 	private Thread gameThread;
 	private Thread spawnThread;
@@ -88,13 +91,15 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		while(running){
 			System.out.println("running");
 			repaint();
-			try {
-				gameThread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(!isPaused){
+				try {
+					gameThread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(x1 > 40 || y1 > 40) break;
 			}
-			if(x1 > 40 || y1 > 40) break;
 		}
 	}
 	
@@ -102,7 +107,7 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		
 		while(running){
 			System.out.println("running spawner");
-			if(!boot && !spawners.isEmpty()){
+			if(!boot && !spawners.isEmpty() && !isPaused){
 				Random rand = new Random();
 				int spawns = rand.nextInt(spawners.size());
 				Pair elementAt = spawners.remove(spawns);
@@ -126,7 +131,6 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 	public void paint(Graphics gg) {
 		super.paint(gg);
 		Graphics2D g = (Graphics2D) gg;
-		
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
 				// draw wall
@@ -168,7 +172,8 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		}
 		for (Enemy enemy : enemies) {
 			enemy.setWeight(tile.getWeightAll());
-			enemy.update(g, tile);
+			if(!isPaused)enemy.update(g, tile);
+			else tile.drawEnemy(enemy.getX(), enemy.getY(), g, unit, (enemy.getHealth() <= 50));
 		}
 		for (Pair tower : towers) {
 			tile.drawTowerLine(tower.getFirst(), tower.getSecond(), g, unit);
@@ -177,11 +182,16 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		Iterator<Enemy> iterator = enemies.iterator();
 		while(iterator.hasNext()){
 			Enemy enemy = iterator.next();
-			if(tile.getAttack(enemy.getX(), enemy.getY()) > 0){
+			if(tile.getAttack(enemy.getX(), enemy.getY()) > 0 && !isPaused){
 				enemy.updateHealth(tile.getAttack(enemy.getX(), enemy.getY()));
 			}
 			if(enemy.getHealth() <= 0 && !enemies.isEmpty()){
 				iterator.remove();
+				coins++;
+			}
+			if(tile.nearHome(enemy.getX(), enemy.getY())){
+				iterator.remove();
+				lifes--;
 			}
 		}
 
@@ -227,7 +237,7 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		g.setFont(new Font("Calibri", Font.PLAIN, 19));
 		g.drawString("HP:", 820, 225);
 		//ATUR JUMLAH HATI ===============
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < lifes; i++) {
 			tile.drawHeart(860+i*35,208,g);
 		}
 		//==================================
@@ -240,8 +250,8 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		g.drawString("  X", 900, 260);
 		
 		//i ini contoh angka, ubah di sini sesuai jumlah coin nnt==============
-		int i = 1;
-		String coin = Integer.toString(i);
+//		coins = 1;
+		String coin = Integer.toString(coins);
 		g.drawString(coin, 921, 260);
 		//=============================================
 		
@@ -253,7 +263,7 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		g.drawString("  X", 917, 295);
 		
 		//i ini contoh angka, ubah di sini sesuai jumlah enemy nnt==============
-		int enem = 5;
+		int enem = enemies.size();
 		String enemies = Integer.toString(enem);
 		g.drawString(enemies, 937, 295);
 		//=============================================	
@@ -266,13 +276,13 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		g.drawString("  X", 923, 333);
 		
 		//i ini contoh angka, ubah di sini sesuai jumlah spawners nnt==============
-		int spaw = 87;
-		String spawners = Integer.toString(spaw);
-		g.drawString(spawners, 944, 333);
+//		int spaw = 87;
+		String spaw = Integer.toString(spawners.size());
+		g.drawString(spaw, 944, 333);
 		//=============================================
 		
 		g.setColor(Color.BLACK);
-		if(true){ //atur nnti pas P di tekan atau ngaknya disini==================
+		if(isPaused){ //atur nnti pas P di tekan atau ngaknya disini==================
 			g.setFont(new Font("Calibri", Font.BOLD, 27));
 			g.drawString("Press P to Pause", 820, 405);
 		}
@@ -293,7 +303,13 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+		int key = e.getKeyCode();
+		if(key == KeyEvent.VK_P){
+			isPaused = !isPaused;
+		}
+		if(key == KeyEvent.VK_ESCAPE){
+			System.exit(0);
+		}
 	}
 
 	@Override
@@ -315,6 +331,8 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 		int pixelClickX = e.getX()/unit;
 		int pixelClickY = e.getY()/unit;
 		
+		if(coins <= 0 || isPaused) return;
+		
 		if(pixelClickX == 20 && pixelClickY == 25) return;
 		
 		if(!tile.outOfBound(pixelClickX, pixelClickY)){
@@ -328,6 +346,7 @@ public class Map extends JPanel implements MouseListener, KeyListener, MouseMoti
 					return;
 			}
 			towers.add(new Pair(e.getX()/unit, e.getY()/unit));
+			coins--;
 		}
 	}
 

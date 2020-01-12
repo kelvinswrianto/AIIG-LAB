@@ -48,7 +48,8 @@ public class Enemy {
 		if(dir == 4){
 			y++;
 		}
-		tile.drawEnemy(x, y, g, unit);
+		if(this.health > 50) tile.drawEnemy(x, y, g, unit, false);
+		else tile.drawEnemy(x, y, g, unit, true);
 	}
 	
 	public void updateHealth(int attackMultiplier){
