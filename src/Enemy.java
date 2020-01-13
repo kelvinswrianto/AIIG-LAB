@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 public class Enemy {
 	private int x = 3;
 	private int y = 3;
+	private int dir;
 	private int velx = 1;
 	private int vely = 1;
 	private int health = 100;
@@ -33,9 +34,9 @@ public class Enemy {
 		
 	}
 
-	public void update(Graphics2D g, Tile tile){
+	public void update(Tile tile){
 		Dijkstra d = new Dijkstra(x, y, weight);
-		int dir = d.showPath(20, 25, x, y);
+		this.dir = d.showPath(20, 25, x, y);
 		if(dir == 1){
 			x--;
 		}
@@ -48,8 +49,7 @@ public class Enemy {
 		if(dir == 4){
 			y++;
 		}
-		if(this.health > 50) tile.drawEnemy(x, y, g, unit, false);
-		else tile.drawEnemy(x, y, g, unit, true);
+//		tile.drawEnemy(x, y, g, unit, this.health);
 	}
 	
 	public void updateHealth(int attackMultiplier){
