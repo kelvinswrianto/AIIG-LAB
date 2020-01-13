@@ -80,7 +80,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
-		this.boot = true;
 		map = new Map(w, h);
 		infoPanel = new InfoPanel(tile, unit);
 		
@@ -91,6 +90,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		spawnThread = new Thread(this::runSpawner);
 		spawnThread.start();
 	}
+	
 	public void run(){		
 		while(running){
 			System.out.print("");
@@ -99,7 +99,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				while(iterator.hasNext()){
 					try{
 						Enemy enemy = iterator.next();
-//						System.out.println("ENEMY : " + enemy.getX()+ " " + enemy.getY());
 						if(attack[enemy.getX()][enemy.getY()] > 0 && !isPaused){
 							enemy.updateHealth(attack[enemy.getX()][enemy.getY()]);
 						}
@@ -122,8 +121,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 					}
 				}
 			}
+			
 			repaint();
-			isRunning = false;
 			if(!isPaused){
 				try {
 					gameThread.sleep(500);
@@ -138,9 +137,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	public void runSpawner(){
 		while(true){
 			System.out.print("");
-//			while(isRunning){
-//				
-//			}
 			if(!boot && !spawners.isEmpty() && !isPaused){
 				Random rand = new Random();
 				int spawns = rand.nextInt(spawners.size());
@@ -172,14 +168,14 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 			if(lifes <= 0){
 				caseMouse = false;
 				winScreen = false;
-				if(startSpawner > 0){
+				if(spawners.size() > 0 || enemies.size() > 0){
 					wlm.draw(g, currentScore, false);
 				}
-				else if(startSpawner == 0){
+				else if(spawners.size() == 0 && enemies.size() == 0){
 					wlm.draw(g, currentScore, true);
 				}
 			}
-			else if(lifes > 0 && startSpawner == 0 && enemies.size() == 0){
+			else if(lifes > 0 && spawners.size() == 0 && enemies.size() == 0 && !boot){
 				caseMouse = false;
 				winScreen = false;
 				wlm.draw(g, currentScore, true);
@@ -190,7 +186,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				if(boot){
 					spawners = map.getSpawner();
 				}
-				else{
+
+				if(enemies.size() != 0){
 					startSpawner = enemies.size();
 				}
 				
@@ -231,7 +228,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 				infoPanel.showInfo(g, coins, enemies, spawners, isPaused, lifes);
 				this.boot = false;
-				
 			}
 		}
 		catch (Exception e){
@@ -276,12 +272,13 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 					spawnTime = 3000;
 					coins = 3;
 					lifes = 3;
+					boot = true;
 					spawners.clear();
 					enemies.clear();
 					towers.clear();
+					startSpawner = 92;
 					caseMouse = true;
 					winScreen = true;
-					this.boot = true;
 				}
 			}
 		}
@@ -341,7 +338,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				hoverX = mouseX;
 				hoverY = mouseY;
 				placeable = false;
-				repaint();
 				return;
 			}
 			

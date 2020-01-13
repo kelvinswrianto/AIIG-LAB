@@ -12,9 +12,7 @@ public class Enemy {
 	private int health = 100;
 	private int time = 500;
 	private int attackMultiplier;
-	private double FPS = 60;
-	private double NANOSECOND_PER_FRAME = 1e9/FPS;
-	private double SECOND_PER_FRAME = 1/FPS;
+	private long SECOND_PER_FRAME = 1000/60;
 	
 	private Thread enemy;
 	
@@ -54,25 +52,15 @@ public class Enemy {
 	
 	public void updateHealth(int attackMultiplier){
 		this.attackMultiplier = attackMultiplier;
-		enemy = new Thread(this::run);
-		enemy.start();
-	}
-	
-	public void run(){
-		
-		while(time > 0){
-			if(health > 0){
-				health -= attackMultiplier;
+		// karena enemy berpindah (repaint()) tiap 500 ms
+		// dan darah enemy berkurang 1 tiap 16ms
+		// maka tiap kali perpindahan darah enemy akan berkurang 500/16 = 31.25 HP dikali dengan attackMultiplier
+		if(health > 0){
+			health -= (attackMultiplier*(500/16));
+			if(health < 0){
+				health = 0;
 			}
-			try {
-				enemy.sleep(16);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			time -= 16;
 		}
-		time = 500;
 	}
 	
 	

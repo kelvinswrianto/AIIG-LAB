@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 public class Tile {
 	private int weight[][] = new int[50][50];
-	private int enemy[][] = new int[50][50];
-	private int attack[][] = new int[50][50];
-	private boolean placeable[][] = new boolean[50][50];
+	private int enemy[][] = new int[50][50];  // untuk cek apakah ada enemy
+	private int attack[][] = new int[50][50]; // attack multiplier untuk enemy
+	private boolean placeable[][] = new boolean[50][50]; // untuk cek apakah tile tersebut bisa dipasang tower
 	
 	public Tile() {
 		for (int[] is : weight) {
