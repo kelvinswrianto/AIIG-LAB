@@ -10,6 +10,7 @@ public class Tile {
 	private int weight[][] = new int[50][50];
 	private int enemy[][] = new int[50][50];
 	private int attack[][] = new int[50][50];
+	private boolean placeable[][] = new boolean[50][50];
 	
 	public Tile() {
 		for (int[] is : weight) {
@@ -20,6 +21,9 @@ public class Tile {
 		}
 		for (int[] is : attack) {
 			Arrays.fill(is, 0);
+		}
+		for (boolean[] is : placeable) {
+			Arrays.fill(is, true);
 		}
 	}
 	
@@ -47,6 +51,7 @@ public class Tile {
 			  g.setColor(new Color(255, 0, 255, 60)); 
 			  g.fillRect(unit * (i+dirx[x]), unit * (j+diry[x]), unit, unit);
 			  weight[i+dirx[x]][j+diry[x]] += 27;
+			  placeable[i+dirx[x]][j+diry[x]] = false;
 			  if(enemy[i+dirx[x]][j+diry[x]] == 1 && enemy[i][j] != 100){
 				  drawLine(i+dirx[x], j+diry[x], i, j, g, unit);
 			  }
@@ -60,6 +65,7 @@ public class Tile {
 			  g.setColor(new Color(255, 0, 255, 60));
 			  g.fillRect(unit * (i+dirx2[x]), unit * (j+diry2[x]), unit, unit);
 			  weight[i+dirx2[x]][j+diry2[x]] += 27;
+			  placeable[i+dirx2[x]][j+diry2[x]] = false;
 			  if(enemy[i+dirx2[x]][j+diry2[x]] == 1 && enemy[i][j] != 100){
 				  drawLine(i+dirx2[x], j+diry2[x], i, j, g, unit);
 			  }
@@ -73,6 +79,7 @@ public class Tile {
 			  g.setColor(new Color(255, 0, 255, 60));
 			  g.fillRect(unit * (i+dirx3[x]), unit * (j+diry3[x]), unit, unit);
 			  weight[i+dirx3[x]][j+diry3[x]] += 27;
+			  placeable[i+dirx3[x]][j+diry3[x]] = false;
 			  if(enemy[i+dirx3[x]][j+diry3[x]] == 1 && enemy[i][j] != 100){
 				  drawLine(i+dirx3[x], j+diry3[x], i, j, g, unit);
 			  }
@@ -88,6 +95,7 @@ public class Tile {
 			  g.setColor(new Color(255, 0, 255, 60));
 			  g.fillRect(unit * (i+dirx4[x]), unit * (j+diry4[x]), unit, unit);
 			  weight[i+dirx4[x]][j+diry4[x]] += 27;
+			  placeable[i+dirx4[x]][j+diry4[x]] = false;
 			  if(enemy[i+dirx4[x]][j+diry4[x]] == 1 && enemy[i][j] != 100){
 				  drawLine(i+dirx4[x], j+diry4[x], i, j, g, unit);
 			  }
@@ -152,6 +160,7 @@ public class Tile {
 		weight[i][j] = 1;
 		enemy[i][j] = 0;
 		attack[i][j] = 0;
+		placeable[i][j] = true;
 	}
 	
 	public void drawNormalTileHovered(int i, int j, Graphics2D g, int unit, boolean placeable){
@@ -179,6 +188,7 @@ public class Tile {
 			g.setColor(Color.RED);
 			g.drawLine(unit * i + 20 - p, unit * j + p, unit * i + p, unit * j + 20 - p);
 			weight[i][j] = 50;
+			placeable[i][j] = false;
 		}
 		else{
 			drawNormalTile(i, j, g, unit);
@@ -189,6 +199,7 @@ public class Tile {
 		g.setColor(Color.BLACK);
 		g.fillRect(unit * i, unit * j, unit, unit);
 		weight[i][j] = 99999;
+		placeable[i][j] = false;
 	}
 
 	public void drawHome(int i, int j, Graphics2D g, int unit){
@@ -197,6 +208,7 @@ public class Tile {
 		g.setColor(Color.BLUE);
 		g.fillPolygon(xPoints, yPoints, 5);
 		weight[i][j] = 0;
+		placeable[i][j] = false;
 	}
 	
 	public void drawEnemy(int i, int j, Graphics2D g, int unit, int health){
@@ -208,6 +220,7 @@ public class Tile {
 		g.fillArc(i*unit+2, j*unit+2, 16, 16, 0, 360 *health / 100);
 		weight[i][j] = 600;
 		enemy[i][j] = 1;
+		placeable[i][j] = false;
 	}
 	
 	public boolean nearHome(int x, int y){
@@ -234,5 +247,9 @@ public class Tile {
 	
 	public int [][] getAttackAll(){
 		return attack;
+	}
+	
+	public boolean isPlaceable(int i, int j){
+		return placeable[i][j];
 	}
 }
