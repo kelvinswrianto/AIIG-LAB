@@ -3,6 +3,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,15 +12,15 @@ import javax.swing.JPanel;
 
 public class Main extends JFrame{
 	
-	JPanel map = new Map(40, 30);
-	//JPanel info = new GameInfo();
+	JPanel gamePanel = new GamePanel(40, 30);
 	public Main() {
 		setSize(1057, 670);
 		setTitle("Tower Defense");
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		add(map);
+		add(gamePanel);
 		setVisible(true);
+		addKeyListener((KeyListener) gamePanel);
 	}
 
 	public static void main(String[] args) {

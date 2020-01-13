@@ -45,7 +45,7 @@ public class Dijkstra {
 			int cost = curr.getCost();
 			int indexI = curr.getI();
 			int indexJ = curr.getJ();
-
+			
 			if(visited[indexI][indexJ] == true){
 				continue;
 			}
@@ -58,16 +58,15 @@ public class Dijkstra {
 			int rcc[] = {1,-1,0,0};
 			int dcc[] = {0,0,1,-1};
 			for(int i=0; i<4; i++){
-				if(indexI + rcc[i] > 3 && indexJ + dcc[i] < 30){
-					if(visited[indexI + rcc[i]][indexJ + dcc[i]]) continue;
-					int totalCost = cost + node[indexI + rcc[i]][indexJ + dcc[i]];
-					if(node[indexI + rcc[i]][indexJ + dcc[i]] != -1 && totalCost < totalDistance[indexI + rcc[i]][indexJ + dcc[i]]){
-						totalDistance[indexI + rcc[i]][indexJ + dcc[i]] = totalCost;
-						pq.add(new Node(indexI + rcc[i],indexJ + dcc[i], totalCost));
+				if(visited[indexI + rcc[i]][indexJ + dcc[i]]) continue;
+				int totalCost = cost + node[indexI + rcc[i]][indexJ + dcc[i]];
+				if(node[indexI + rcc[i]][indexJ + dcc[i]] != -1 && totalCost < totalDistance[indexI + rcc[i]][indexJ + dcc[i]]){
+					totalDistance[indexI + rcc[i]][indexJ + dcc[i]] = totalCost;
+					pq.add(new Node(indexI + rcc[i],indexJ + dcc[i], totalCost));
 						
-						parent[indexI + rcc[i]][indexJ + dcc[i]] = new Pair(indexI, indexJ);
-					}
+					parent[indexI + rcc[i]][indexJ + dcc[i]] = new Pair(indexI, indexJ);
 				}
+//				
 			}
 //			System.out.println("process : " + indexI + " " + indexJ + " = " + parent[indexI][indexJ].getFirst() + " " + parent[indexI][indexJ].getSecond() + " " + cost);
 		}
@@ -76,12 +75,7 @@ public class Dijkstra {
 	public int showPath(int i, int j, int newX, int newY){
 		if(i == newX && j == newY) return 0;
 		int ret = 0;
-		System.out.println(parent[i][j].getFirst());
-		System.out.println(newX);
-		System.out.println(parent[i][j].getSecond());
-		System.out.println(newY);
 		if(parent[i][j].getFirst() == newX && parent[i][j].getSecond() == newY){
-			System.out.println(i + " " + j + " " + newX + " " + newY );
 			if(i < newX){
 				ret = 1;
 				return ret;
