@@ -14,7 +14,6 @@ public class InfoPanel {
 		this.unit = unit;
 	}
 	
-	
 	public void drawHome(int i, int j, Graphics2D g, int unit){
 		int xPoints[] = {i*unit, i*unit, i*unit+10, i*unit+20, i*unit+20};
 		int yPoints[] = {j*unit+20, j*unit+10, j*unit, j*unit+10, j*unit+20};
@@ -104,7 +103,7 @@ public class InfoPanel {
 		
 		g.setFont(new Font("Calibri", Font.PLAIN, 19));
 		g.drawString("HP:", 820, 225);
-		//ATUR JUMLAH HATI ===============
+		
 		for (int i = 0; i < lifes; i++) {
 			drawHeart(860+i*35,208,g);
 		}
@@ -116,11 +115,8 @@ public class InfoPanel {
 		g.setColor(Color.BLACK);
 		g.drawString("  X", 900, 260);
 		
-		//i ini contoh angka, ubah di sini sesuai jumlah coin nnt==============
-//		coins = 1;
 		String coin = Integer.toString(coins);
 		g.drawString(coin, 921, 260);
-		//=============================================
 		
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Calibri", Font.PLAIN, 19));
@@ -129,11 +125,9 @@ public class InfoPanel {
 		g.setColor(Color.BLACK);
 		g.drawString("  X", 917, 295);
 		
-		//i ini contoh angka, ubah di sini sesuai jumlah enemy nnt==============
 		int enemySizeInt = enemies.size();
 		String enemySizeStr = Integer.toString(enemySizeInt);
 		g.drawString(enemySizeStr, 937, 295);
-		//=============================================	
 		
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Calibri", Font.PLAIN, 19));
@@ -142,21 +136,18 @@ public class InfoPanel {
 		g.setColor(Color.BLACK);
 		g.drawString("  X", 923, 333);
 		
-		//i ini contoh angka, ubah di sini sesuai jumlah spawners nnt==============
-//		int spaw = 87;
 		String spaw = Integer.toString(spawners.size());
 		g.drawString(spaw, 944, 333);
-		//=============================================
 		
 		g.setColor(Color.BLACK);
-		if(isPaused){ //atur nnti pas P di tekan atau ngaknya disini==================
+		if(isPaused){
 			g.setFont(new Font("Calibri", Font.BOLD, 27));
 			g.drawString("Press P to Pause", 820, 405);
 		}
 		else{
 			g.setFont(new Font("Calibri", Font.BOLD, 27));
 			g.drawString("Press P to Play", 820, 405);
-		}//================================================================
+		}
 
 		g.setFont(new Font("Calibri", Font.BOLD, 27));
 		g.drawString("Press Esc to Exit", 820, 460);

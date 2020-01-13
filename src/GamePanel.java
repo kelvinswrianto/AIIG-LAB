@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	
 	int w, h, unit; 
 	Tile tile = new Tile();
+	WinLoseMenu wlm = new WinLoseMenu();
 	InfoPanel infoPanel;
 	
 	int hoverX = -1;
@@ -54,6 +55,11 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	int spawnerCount = 92;
 	int lifes = 3;
 	boolean isPaused = false;
+
+	int currentScore = 0;
+	int startSpawner = 92;
+	boolean caseMouse = true;
+	boolean winScreen = true;
 	
 	private boolean isRunning = false;
 	
@@ -74,6 +80,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		this.w = w;
 		this.h = h;
 		this.unit = 20;
+		this.boot = true;
 		map = new Map(w, h);
 		infoPanel = new InfoPanel(tile, unit);
 		
@@ -86,36 +93,35 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	}
 	
 	public void run(){
-//		int max = 25; 
-//		int min = 1;
-//		
-//		x1 = (int) ((Math.random() * ((max - min) + 1)) + min);
-//		y1 = (int) ((Math.random() * ((max - min) + 1)) + min);
-//		
 		while(running){
 			System.out.print("");
-			isRunning = true;
-			Iterator<Enemy> iterator = enemies.iterator();
-			while(iterator.hasNext()){
-				Enemy enemy = iterator.next();
-				if(attack[enemy.getX()][enemy.getY()] > 0 && !isPaused){
-					enemy.updateHealth(attack[enemy.getX()][enemy.getY()]);
+			if(winScreen){
+				Iterator<Enemy> iterator = enemies.iterator();
+				while(iterator.hasNext()){
+					try{
+						Enemy enemy = iterator.next();
+//						System.out.println("ENEMY : " + enemy.getX()+ " " + enemy.getY());
+						if(attack[enemy.getX()][enemy.getY()] > 0 && !isPaused){
+							enemy.updateHealth(attack[enemy.getX()][enemy.getY()]);
+						}
+						if(enemy.getHealth() <= 0 && !enemies.isEmpty()){
+							iterator.remove();
+							coins++;
+						}
+						else if(tile.nearHome(enemy.getX(), enemy.getY())){
+							iterator.remove();
+							lifes--;
+						}
+						else {
+							enemy.setWeight(tile.getWeightAll());
+							if(!isPaused) enemy.update(tile);
+						}
+					}
+					catch(Exception e){
+//						System.out.println("Something is wrong, not sure what, dont know dont care");
+						break;
+					}
 				}
-				if(enemy.getHealth() <= 0 && !enemies.isEmpty()){
-					iterator.remove();
-					coins++;
-				}
-				else if(tile.nearHome(enemy.getX(), enemy.getY())){
-					iterator.remove();
-					lifes--;
-				}
-//				enemy.setWeight(tile.getWeightAll());
-//				if(!isPaused) enemy.update(tile);
-			}
-			
-			for (Enemy enemy : enemies) {
-				enemy.setWeight(tile.getWeightAll());
-				if(!isPaused) enemy.update(tile);
 			}
 			repaint();
 			isRunning = false;
@@ -132,7 +138,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	}
 	
 	public void runSpawner(){
-		
 		while(true){
 			System.out.print("");
 //			while(isRunning){
@@ -154,80 +159,106 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 					spawnTime -= 100;
 				}
 			}
-			
 		}
 	}
 	
 	@Override
 	public void paint(Graphics gg) {
 		super.paint(gg);
-		Graphics2D g = (Graphics2D) gg;
+		try{
+			Graphics2D g = (Graphics2D) gg;
+			currentScore = lifes*1000 + coins*100;
+			if(lifes <= 0){
+				caseMouse = false;
+				winScreen = false;
+				if(startSpawner > 0){
+					wlm.draw(g, currentScore, false);
+				}
+				else if(startSpawner == 0){
+					wlm.draw(g, currentScore, true);
+				}
+			}
+			else if(lifes > 0 && startSpawner == 0 && enemies.size() == 0){
+				caseMouse = false;
+				winScreen = false;
+				wlm.draw(g, currentScore, true);
+			}
+			else{
+				//System.out.println("bacotttt"+" "+enemies.size()+" "+startSpawner);
+				this.attack = tile.getAttackAll();
+				map.drawMap(tile, g, boot);
+				
+				if(boot){
+					spawners = map.getSpawner();
+				}
+				else{
+					startSpawner = enemies.size();
+				}
+				
+				if(placeable == true){
+					tile.drawNormalTileHovered(hoverX, hoverY, g, unit, placeable);
+				}
+				else{
+					if(hoverX != -1 && hoverY != -1){
+						tile.drawNormalTileHovered(hoverX, hoverY, g, unit, placeable);
+					}
+				}
+				
+				Iterator <Pair> iteratorSpawner = spawners.iterator();
+				while(iteratorSpawner.hasNext()){
+					Pair sr = iteratorSpawner.next();
+					tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
+				}
+		//		for (Pair sr : spawners) {
+		//			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
+		//		}
+				
+				Iterator <Pair> iteratorTower = towers.iterator();
+				while(iteratorTower.hasNext()){
+					Pair tower = iteratorTower.next();
+					tile.drawTower(tower.getFirst(), tower.getSecond(), g, unit);
+				}
+		//		for (Pair tower : towers) {
+		//			tile.drawTower(tower.getFirst(), tower.getSecond(), g, unit);
+		//		}
+				
 		
-		map.drawMap(tile, g, boot);
+				Iterator<Enemy> iterator = enemies.iterator();
+				while(iterator.hasNext()){
+					Enemy enemy = iterator.next();
+					tile.drawEnemy(enemy.getX(), enemy.getY(), g, unit, enemy.getHealth());
+				}
+		//		for (Enemy enemy : enemies) {
+		//			tile.drawEnemy(enemy.getX(), enemy.getY(), g, unit, enemy.getHealth());
+		//		}
+				
+				Iterator <Pair> iteratorLine = towers.iterator();
+				while(iteratorLine.hasNext()){
+					Pair lines = iteratorLine.next();
+					tile.drawTowerLine(lines.getFirst(), lines.getSecond(), g, unit);
+				}
+		//		for (Pair tower : towers) {
+		//			tile.drawTowerLine(tower.getFirst(), tower.getSecond(), g, unit);
+		//		}
+				
+		//		for(int i=0; i<40; i++){
+		//			for(int j=0; j<30; j++){
+		////				System.out.print(attack[i][j] + " ");
+		//				if(attack[i][j] == 1) System.out.println(i + " " + j);
+		//			}
+		////			System.out.println();
+		//		}
+		//		System.out.println();
+		//		System.out.println();
 		
-		if(boot){
-			spawners = map.getSpawner();
-		}
-
-		if(placeable == true){
-			tile.drawNormalTileHovered(hoverX, hoverY, g, unit, placeable);
-		}
-		else{
-			if(hoverX != -1 && hoverY != -1){
-				tile.drawNormalTileHovered(hoverX, hoverY, g, unit, placeable);
+				infoPanel.showInfo(g, coins, enemies, spawners, isPaused, lifes);
+				this.boot = false;
+				
 			}
 		}
-		
-		Iterator <Pair> iteratorSpawner = spawners.iterator();
-		while(iteratorSpawner.hasNext()){
-			Pair sr = iteratorSpawner.next();
-			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
+		catch (Exception e){
+			// do nothing
 		}
-//		for (Pair sr : spawners) {
-//			tile.drawSpawner(sr.getFirst(), sr.getSecond(), g, unit, true);
-//		}
-		
-		Iterator <Pair> iteratorTower = towers.iterator();
-		while(iteratorTower.hasNext()){
-			Pair tower = iteratorTower.next();
-			tile.drawTower(tower.getFirst(), tower.getSecond(), g, unit);
-		}
-//		for (Pair tower : towers) {
-//			tile.drawTower(tower.getFirst(), tower.getSecond(), g, unit);
-//		}
-		
-
-		Iterator<Enemy> iterator = enemies.iterator();
-		while(iterator.hasNext()){
-			Enemy enemy = iterator.next();
-			tile.drawEnemy(enemy.getX(), enemy.getY(), g, unit, enemy.getHealth());
-		}
-//		for (Enemy enemy : enemies) {
-//			tile.drawEnemy(enemy.getX(), enemy.getY(), g, unit, enemy.getHealth());
-//		}
-		
-		Iterator <Pair> iteratorLine = towers.iterator();
-		while(iteratorLine.hasNext()){
-			Pair lines = iteratorLine.next();
-			tile.drawTowerLine(lines.getFirst(), lines.getSecond(), g, unit);
-		}
-//		for (Pair tower : towers) {
-//			tile.drawTowerLine(tower.getFirst(), tower.getSecond(), g, unit);
-//		}
-		this.attack = tile.getAttackAll();
-		
-//		for(int i=0; i<40; i++){
-//			for(int j=0; j<30; j++){
-////				System.out.print(attack[i][j] + " ");
-//				if(attack[i][j] == 1) System.out.println(i + " " + j);
-//			}
-////			System.out.println();
-//		}
-//		System.out.println();
-//		System.out.println();
-
-		infoPanel.showInfo(g, coins, enemies, spawners, isPaused, lifes);
-		this.boot = false;
 	}
 	
 	@Override
@@ -258,25 +289,47 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-		int pixelClickX = e.getX()/unit;
-		int pixelClickY = e.getY()/unit;
-		
-		if(coins <= 0 || isPaused) return;
-		
-		if(pixelClickX == 20 && pixelClickY == 25) return;
-		
-		if(!tile.outOfBound(pixelClickX, pixelClickY)){
-//			if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
-			for (Pair sr : spawners) {
-				if(pixelClickX == sr.getFirst() && pixelClickY == sr.getSecond())
-					return;
+		if(!caseMouse){
+			int x = e.getX();
+			int y = e.getY();
+			
+			if(x >= 270 && x <= 720){
+				if(y >= 380 && y <= 480){
+					System.out.println("masuk klik");
+					spawnTime = 3000;
+					coins = 3;
+					lifes = 3;
+					spawners.clear();
+					enemies.clear();
+					towers.clear();
+					caseMouse = true;
+					winScreen = true;
+					this.boot = true;
+				}
 			}
-			for (Pair tower : towers) {
-				if(pixelClickX == tower.getFirst() && pixelClickY == tower.getSecond())
-					return;
+		}
+		else{
+			int pixelClickX = e.getX()/unit;
+			int pixelClickY = e.getY()/unit;
+			
+			if(coins <= 0 || isPaused) return;
+			
+			if(pixelClickX == 20 && pixelClickY == 25) return;
+			
+			if(!tile.outOfBound(pixelClickX, pixelClickY)){
+//				if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
+				for (Pair sr : spawners) {
+					if(pixelClickX == sr.getFirst() && pixelClickY == sr.getSecond())
+						return;
+				}
+				for (Pair tower : towers) {
+					if(pixelClickX == tower.getFirst() && pixelClickY == tower.getSecond())
+						return;
+				}
+//				if(attack[pixelClickX][pixelClickY] > 0) return;
+				towers.add(new Pair(pixelClickX, pixelClickY));
+				coins--;
 			}
-			towers.add(new Pair(e.getX()/unit, e.getY()/unit));
-			coins--;
 		}
 		repaint();
 	}
@@ -313,43 +366,56 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-		int mouseX = e.getX()/unit;
-		int mouseY = e.getY()/unit;
-		
-		if(mouseX == 20 && mouseY == 25){
-			hoverX = mouseX;
-			hoverY = mouseY;
-			placeable = false;
-			return;
-		}
-		
-		if(!tile.outOfBound(mouseX, mouseY)){
-//			if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
-			for (Pair sr : spawners) {
-				if(mouseX == sr.getFirst() && mouseY == sr.getSecond()){
-					hoverX = mouseX;
-					hoverY = mouseY;
-					placeable = false;
-					return;
-				}
+		if(winScreen){
+			int mouseX = e.getX()/unit;
+			int mouseY = e.getY()/unit;
+			
+			if(mouseX == 20 && mouseY == 25){
+				hoverX = mouseX;
+				hoverY = mouseY;
+				placeable = false;
+				repaint();
+				return;
 			}
-			for (Pair tower : towers) {
-				if(mouseX == tower.getFirst() && mouseY == tower.getSecond()){
-					hoverX = mouseX;
-					hoverY = mouseY;
-					placeable = false;
-					return;
+			
+			if(!tile.outOfBound(mouseX, mouseY)){
+//				if(!spawners.contains(new Pair(pixelClickX, pixelClickY)))
+				for (Pair sr : spawners) {
+					if(mouseX == sr.getFirst() && mouseY == sr.getSecond()){
+						hoverX = mouseX;
+						hoverY = mouseY;
+						placeable = false;
+						repaint();
+						return;
+					}
 				}
-					
+				for (Pair tower : towers) {
+					if(mouseX == tower.getFirst() && mouseY == tower.getSecond()){
+						hoverX = mouseX;
+						hoverY = mouseY;
+						placeable = false;
+						repaint();
+						return;
+					}
+				}
+				System.out.println(mouseX + " " + mouseY);
+//				if(attack[mouseX][mouseY] > 0){
+//					hoverX = mouseX;
+//					hoverY = mouseY;
+//					placeable = false;
+//					repaint();
+//					return;
+//				}
+				hoverX = mouseX;
+				hoverY = mouseY;
+				placeable = true;
 			}
-			hoverX = mouseX;
-			hoverY = mouseY;
-			placeable = true;
-		}
-		else{
-			hoverX = -1;
-			hoverY = -1;
-			placeable = false;
+			else{
+				hoverX = -1;
+				hoverY = -1;
+				placeable = false;
+			}
+			repaint();
 		}
 		repaint();
 	}
