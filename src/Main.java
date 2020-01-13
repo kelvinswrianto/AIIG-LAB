@@ -29,20 +29,3 @@ public class Main extends JFrame{
 	}
 
 }
-
-
-//setLayout(new GridBagLayout());
-//
-//GridBagConstraints c = new GridBagConstraints();
-//
-//c.fill = GridBagConstraints.BOTH;
-//c.weightx = 1.0;
-//c.weighty = 1.0;
-//c.gridwidth = GridBagConstraints.RELATIVE;
-//add(map, c);
-//
-//c.weightx = 0.01;
-//c.insets = new Insets(30, 0, 0, 25);
-//c.gridwidth = GridBagConstraints.REMAINDER;
-//add(info, c);
-//setVisible(true);

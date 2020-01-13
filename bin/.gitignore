@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-/Dijkstra/
-/WinLoseMenu.class
-/PlayAgainButton.class
-=======
 /Dijkstra$1.class
 /Dijkstra.class
 /Enemy.class
@@ -13,4 +8,4 @@
 /Node.class
 /Pair.class
 /Tile.class
->>>>>>> 068a35cecf5178523366106614b97f533d0933b9
+/WinLoseMenu.class
