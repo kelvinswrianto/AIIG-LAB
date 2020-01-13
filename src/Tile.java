@@ -43,6 +43,7 @@ public class Tile {
 
 		  // add weight tower
 		  weight[i][j] = 500;
+		  placeable[i][j] = false;
 		  int dirx[] = {+1,+1,+0,+0,-1,-1,+1,-1};
 		  int diry[] = {+1,-1,+1,-1,+1,-1,+0,+0};
 		  for(int x=0; x<8; x++){

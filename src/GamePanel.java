@@ -52,16 +52,12 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	
 	int spawnTime = 3000;
 	int coins = 3;
-	int spawnerCount = 92;
 	int lifes = 3;
 	boolean isPaused = false;
 
 	int currentScore = 0;
-	int startSpawner = 92;
 	boolean caseMouse = true;
 	boolean winScreen = true;
-	
-	private boolean isRunning = false;
 	
 	Vector<Pair> spawners = new Vector<>();
 	Vector<Enemy> enemies = new Vector<>();
@@ -69,12 +65,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	
 	private Thread gameThread;
 	private Thread spawnThread;
-	private Thread enemyThread;
 	
 	private boolean boot = true;
 	private boolean running = true;
-	
-	private int x1 = 3, y1 = 3;
 	
 	public GamePanel(int w, int h ) {
 		this.w = w;
@@ -105,6 +98,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 						if(enemy.getHealth() <= 0 && !enemies.isEmpty()){
 							iterator.remove();
 							coins++;
+							repaint();
 						}
 						else if(tile.nearHome(enemy.getX(), enemy.getY())){
 							iterator.remove();
@@ -142,6 +136,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				int spawns = rand.nextInt(spawners.size());
 				Pair elementAt = spawners.remove(spawns);
 				enemies.add(new Enemy(elementAt.getFirst(), elementAt.getSecond()));
+				
 				try {
 					spawnThread.sleep(spawnTime);
 				} catch (InterruptedException e) {
@@ -185,10 +180,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				
 				if(boot){
 					spawners = map.getSpawner();
-				}
-
-				if(enemies.size() != 0){
-					startSpawner = enemies.size();
 				}
 				
 				if(placeable == true){
@@ -276,7 +267,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 					spawners.clear();
 					enemies.clear();
 					towers.clear();
-					startSpawner = 92;
 					caseMouse = true;
 					winScreen = true;
 				}
@@ -291,8 +281,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 			if(pixelClickX == 20 && pixelClickY == 25) return;
 			
 			if(!tile.outOfBound(pixelClickX, pixelClickY) && placeable == true){
-				towers.add(new Pair(e.getX()/unit, e.getY()/unit));
+				towers.add(new Pair(pixelClickX, pixelClickY));
 				coins--;
+				placeable = false;
 			}
 		}
 		repaint();
