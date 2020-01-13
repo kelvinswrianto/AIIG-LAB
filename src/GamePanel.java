@@ -175,7 +175,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 					wlm.draw(g, currentScore, true);
 				}
 			}
-			else if(lifes > 0 && startSpawner == 0 && enemies.size() == 0){
+			else if(lifes > 0 && startSpawner == 1 && enemies.size() == 0){
 				caseMouse = false;
 				winScreen = false;
 				wlm.draw(g, currentScore, true);
@@ -186,7 +186,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				if(boot){
 					spawners = map.getSpawner();
 				}
-				else{
+
+				if(enemies.size() != 0){
 					startSpawner = enemies.size();
 				}
 				

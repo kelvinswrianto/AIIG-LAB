@@ -14,7 +14,7 @@ public class Main extends JFrame{
 	
 	JPanel gamePanel = new GamePanel(40, 30);
 	public Main() {
-		setSize(1057, 670);
+		setSize(1057, 635);
 		setTitle("Tower Defense");
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
